@@ -412,11 +412,11 @@ fun RVItem1(
             .clickable {
                 navController.navigate("detail/${rv.id}")
             },
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(2.dp),
 //        elevation = 4.dp
     ) {
         Column(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             rv.imageUrl?.let { imagePath ->
@@ -431,7 +431,7 @@ fun RVItem1(
                 )
             }
 
-            Spacer(modifier = Modifier.height(6.dp))
+//            Spacer(modifier = Modifier.height(2.dp))
 
             Text(
                 text = rv.name ?: "Unknown Title",
@@ -439,7 +439,7 @@ fun RVItem1(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
-            Spacer(modifier = Modifier.height(6.dp))
+//            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = rv.description,
                 fontSize = 14.sp,
@@ -447,7 +447,7 @@ fun RVItem1(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
-            Spacer(modifier = Modifier.height(6.dp))
+//            Spacer(modifier = Modifier.height(2.dp))
 
             Row {
 
