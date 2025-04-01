@@ -58,7 +58,7 @@ class RVViewModel : ViewModel() {
         viewModelScope.launch {
             _loading.value = true
             try {
-                rvApiService.addAllRV(rv)  // Make sure this function only accepts a single RV
+                rvApiService.addAllRV(rv)
                 fetchRVs()  // Refresh the list after adding
 //                Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {

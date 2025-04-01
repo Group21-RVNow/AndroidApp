@@ -19,7 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -48,6 +48,13 @@ import coil.compose.rememberImagePainter
 import com.example.rvnow.model.RV
 import com.example.rvnow.viewmodels.RVViewModel
 import androidx.compose.foundation.Image
+import androidx.compose.material.icons.filled.HeartBroken
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChatBubbleOutline
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.ShoppingCart
 //import androidx.compose.ui.Alignment
 //import androidx.compose.ui.graphics.Color
 
@@ -287,6 +294,8 @@ fun HomeScreen(
                     }
                 }
             }
+
+
             item {
                 Box(
                     modifier = Modifier
@@ -398,6 +407,7 @@ fun RVItem1(
     Card(
         modifier = Modifier
             .width(250.dp) // Fixed width for each item (adjust as needed)
+//            .height(400.dp)
             .padding(8.dp)
             .clickable {
                 navController.navigate("detail/${rv.id}")
@@ -415,13 +425,13 @@ fun RVItem1(
                     contentDescription = rv.name ?: "Unknown Title",
                     modifier = Modifier
                         .width(220.dp) // Adjust width so it fits within the card
-                        .height(150.dp) // Adjust height to match the card
+                        .height(250.dp) // Adjust height to match the card
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = rv.name ?: "Unknown Title",
@@ -429,13 +439,7 @@ fun RVItem1(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
-//            Text(
-//                text = rv.insuranceInfo ?: "Unknown ",
-//                fontSize = 18.sp,
-//                fontWeight = FontWeight.Bold,
-//                modifier = Modifier.padding(vertical = 4.dp)
-//            )
-
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = rv.description,
                 fontSize = 14.sp,
@@ -443,6 +447,66 @@ fun RVItem1(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Row {
+
+                Button(
+                    onClick = {
+                        // Add to Cart Logic
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent, // Removes background
+                        contentColor = Color.Black // Adjust text/icon color
+                    ),
+//                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green)
+                ) {
+                    Icon(imageVector = Icons.Filled.Edit, contentDescription = "Write Comment", tint = Color.Red)
+//                    Spacer(modifier = Modifier.width(8.dp))
+//                    Text("Add to Cart")
+                }
+
+                Button(
+                    onClick = {
+//                        if (comment.isNotBlank()) {
+//                            comments = comments + comment
+//                            comment = ""
+//                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent, // Removes background
+                        contentColor = Color.Black // Adjust text/icon color
+                    ),
+//                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Icon(imageVector = Icons.Filled.Favorite, contentDescription = "Favorite", tint = Color.Red)
+//                    Icon(imageVector = Icons.Filled.ShoppingCart, contentDescription = "Cart")
+//                    Text("Comment")
+                }
+
+                Button(
+                    onClick = { /* Implement add to cart logic */ },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent, // Removes background
+                        contentColor = Color.Black // Adjust text/icon color
+                    ),
+//                modifier = Modifier.fillMaxWidth(),
+//                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue)
+                ) {
+                    Icon(imageVector = Icons.Filled.ShoppingCart, contentDescription = "Cart", tint = Color.Black)
+//                    Spacer(modifier = Modifier.width(8.dp))
+//                    Text("Add to Cart", color = Color.White)
+                }
+            }
+
+//            Text(
+//                text = rv.insuranceInfo ?: "Unknown ",
+//                fontSize = 18.sp,
+//                fontWeight = FontWeight.Bold,
+//                modifier = Modifier.padding(vertical = 4.dp)
+//            )
+
+
         }
     }
 }
