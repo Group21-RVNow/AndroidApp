@@ -113,7 +113,7 @@ fun RVDetailScreen(rvId: String, rvViewModel: RVViewModel, navController: NavCon
 
                 // Main RV Image
                 Image(
-                    painter = rememberImagePainter(data = it.imageUrl),
+                    painter = rememberAsyncImagePainter(model = it.imageUrl),
                     contentDescription = it.name,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -182,7 +182,7 @@ fun RVDetailScreen(rvId: String, rvViewModel: RVViewModel, navController: NavCon
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Comment Section
-                Text(text = "Leave a Comment:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Leave a Comment:", fontSize = 58.sp, fontWeight = FontWeight.Bold)
                 OutlinedTextField(
                     value = comment,
                     onValueChange = { comment = it },
@@ -232,119 +232,4 @@ fun RVDetailScreen(rvId: String, rvViewModel: RVViewModel, navController: NavCon
 }
 
 
-//@Composable
-//fun RVDetailScreen(rvId: String, rvViewModel: RVViewModel, navController: NavController) {
-//    // Find the RV by id
-//    val rvList by rvViewModel.rvs.collectAsState()
-//    val rv = rvList.firstOrNull { it.id == rvId }
-//
-//    val image1 = rememberAsyncImagePainter("file:///android_asset/images/11.png")
-//    Column(modifier = Modifier.padding(10.dp)) {
-//
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(250.dp)
-//                .padding(bottom = 16.dp)
-//                .background(color = Color.White)
-//        ) {
-//            // Loading image from drawable or assets
-//            Image(
-//                painter = image1,
-//                contentDescription = "RV Image",
-//                modifier = Modifier.fillMaxSize(),
-//                contentScale = ContentScale.Crop
-//            )
-//
-//            Text(
-//                text = "Welcome to RVNow",
-//                color = Color.White,
-//                fontSize = 34.sp,
-//                fontWeight = FontWeight.Bold,
-//                modifier = Modifier.align(Alignment.Center)
-//            )
-//        }
-//
-//        rv?.let {
-//            Column(modifier = Modifier.padding(16.dp)) {
-//                Text(
-//                    text = it.name,
-//                    fontSize = 24.sp,
-//                    fontWeight = FontWeight.Bold
-//                )
-//                Spacer(modifier = Modifier.height(8.dp))
-//
-//                // Main RV Image
-//                Image(
-//                    painter = rememberImagePainter(data = it.imageUrl),
-//                    contentDescription = it.name,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(300.dp),
-//                    contentScale = ContentScale.Crop
-//                )
-//
-//                Spacer(modifier = Modifier.height(16.dp))
-//
-//                // Description Text
-//                Text(
-//                    text = "Description: ${it.description}",
-//                    fontSize = 16.sp
-//                )
-//
-//                Spacer(modifier = Modifier.height(8.dp))
-//
-//                // Price Text
-//                Text(
-//                    text = "Price Per Day: \$${it.driverLicenceRequired}",
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.Bold
-//                )
-//                Spacer(modifier = Modifier.height(8.dp))
-//                Text(
-//                    text = "Driver Licence Requried: \$${it.pricePerDay}",
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.Bold
-//                )
-//                Spacer(modifier = Modifier.height(8.dp))
-////                Text(
-////                    text = "Booked Dates: \$${it.bookedDates.startDate}",
-////                    fontSize = 16.sp,
-////                    fontWeight = FontWeight.Bold
-////                )
-//
-//                // Displaying additional images in a horizontal list
-////                LazyRow(
-////                    modifier = Modifier.fillMaxWidth()
-////                ) {
-////                    items(it.additionalImages.ifEmpty { listOf("default_image_url") }) { imageUrl ->
-////                        AsyncImage(
-////                            model = imageUrl,
-////                            contentDescription = "Image",
-////                            modifier = Modifier
-////                                .padding(8.dp)
-////                                .height(300.dp)
-////                                .fillMaxWidth(),
-////                            contentScale = ContentScale.Crop
-////                        )
-////                    }
-////                }
-//
-//                LazyRow(
-////                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    items(it.additionalImages.ifEmpty { listOf("default_image_url") }) { imageUrl ->
-//                        AsyncImage(
-//                            model = imageUrl,
-//                            contentDescription = "Image",
-//                            modifier = Modifier
-//                                .padding(8.dp),
-//
-//                            contentScale = ContentScale.Crop
-//                        )
-//                    }
-//                }
-//            }
-//        } ?: Text(text = "RV not found")
-//    }
-//}
+
