@@ -74,7 +74,8 @@ data class RV(
     @get:PropertyName("isPopular") val isPopular: Boolean = true,
     val status:String="",
     val createdAt: Timestamp = Timestamp.now(),
-    val bookedDates: List<Map<String, Timestamp>> = listOf()
+    val bookedDates: List<Map<String, Timestamp>> = listOf(),
+//    val comments:List<String> = listOf(comment),
 )
 
 
