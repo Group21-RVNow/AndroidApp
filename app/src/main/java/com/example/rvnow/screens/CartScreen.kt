@@ -41,6 +41,7 @@ import androidx.compose.runtime.livedata.observeAsState
 
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import com.example.rvnow.model.CartItem
 import com.example.rvnow.viewmodels.AuthViewModel
@@ -93,32 +94,44 @@ fun CartScreen(
         } else if (cartItems.isEmpty()) {
             Text("Your cart is empty", modifier = Modifier.padding(16.dp))
         } else {
-            LazyColumn {
-                items(cartItems) { item ->
-                    CartItemCard(item, rvViewModel)
-                }
-
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-
+            // Wrap the LazyColumn in a Box
             Box(
-                modifier = Modifier.width(30.dp)
+                modifier = Modifier.fillMaxSize()
             ) {
-                Button(
-                    onClick = { /* ... */ },
-                    modifier = Modifier.align(Alignment.CenterEnd).background(Color.Red)
+                // LazyColumn to display cart items
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        "Proceed to Checkout",
-                        style = TextStyle(
-                            fontSize = 24.sp,
-                            color = Color.Green
+                    items(cartItems) { item ->
+                        CartItemCard(item, rvViewModel)
+                    }
+                }
+
+                // Box to hold the button at the bottom-right corner
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp) // Add padding to move it up slightly from the bottom
+                ) {
+                    Button(
+                        onClick = { /* ... */ },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd) // Position it at the bottom end of the screen
+                            .padding(16.dp) // Optional padding to make the button text more readable
+                    ) {
+                        Text(
+                            text = "Proceed to Checkout",
+                            style = TextStyle(
+                                fontSize = 18.sp, // Adjust font size if necessary
+                                color = Color.Green
+                            ),
+                            maxLines = 1, // Ensure text doesn't overflow to multiple lines
+                            overflow = TextOverflow.Ellipsis // Ensure text is ellipsized if it's too long
                         )
-                    )
+                    }
                 }
             }
+
 
 
 
