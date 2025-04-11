@@ -230,54 +230,6 @@ class RVInformation {
     }
 
 
-//    fun getAverageRating(rvId: String, onResult: (Float) -> Unit) {
-//        val ratingsRef = db.collection("rvs")
-//            .document(rvId)
-//            .collection("ratings")
-//
-//        val aggregateQuery = ratingsRef.aggregate(AggregateField.average("rating"))
-//
-//        Log.d("FIREBASE", "Fetching average rating for RV: $rvId")
-//
-//        aggregateQuery.get(AggregateSource.SERVER)
-//            .addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    val snapshot = task.result
-//                    val averageRating = snapshot.get(AggregateField.average("rating")) ?: 0.0
-//                    Log.d("FIREBASE", "Got average: $averageRating")
-//                    onResult(averageRating.toFloat())
-//                } else {
-//                    Log.e("FIREBASE", "Failed to fetch average", task.exception)
-//                    onResult(0f)
-//                }
-//            }
-//    }
-
-
-
-//    fun getAverageRating(rvId: String, onResult: (Float) -> Unit) {
-////
-//        val ratingsRef = db.collection("rvs")
-//            .document(rvId)
-//            .collection("ratings")
-//
-//        val aggregateQuery = ratingsRef.aggregate(
-//            AggregateField.average("rating")
-//        )
-//
-//        aggregateQuery.get(AggregateSource.SERVER).addOnCompleteListener { task ->
-//            if (task.isSuccessful) {
-//                val snapshot = task.result
-//                val averageRating = snapshot.get(AggregateField.average("rating"))
-//                // Use averageRating as needed
-//            } else {
-//                // Handle the error
-//            }
-//        }
-//
-//    }
-
-
 
     fun fetchComments(rvId: String, onCommentsFetched: (List<Comment>) -> Unit) {
         db.collection("rvs")

@@ -339,10 +339,10 @@ class RVViewModel : ViewModel() {
 //    fun checkout(userId: String, callback: (Boolean) -> Unit) {
 //        viewModelScope.launch {
 //            try {
-                // 1. Process payment (implement your payment logic)
+////                 1. Process payment (implement your payment logic)
 //                val paymentSuccess = rvApiService.processPayment(userId, _cartItems)
-
-                // 2. If successful, clear cart
+//
+////                 2. If successful, clear cart
 //                if (paymentSuccess) {
 //                    _cartItems.clear()
 //                    rvApiService.clearCart(userId)
