@@ -686,7 +686,7 @@ private fun RVCard(
 //    val averageRating by rvViewModel.averageRating.collectAsState()
     val averageRating = rvViewModel.averageRatings.collectAsState().value[rvId] ?: 0f
 
-
+//this is usd to fix average rating
 
 
 
