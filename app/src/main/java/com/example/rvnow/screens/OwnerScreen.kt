@@ -50,11 +50,14 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
+//    var priceForSales by remember { mutableStateOf("") }
+    var pricePerDay by remember { mutableStateOf("") }
     var place by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
     var isForSale by remember { mutableStateOf(false) }
 
     var isForRental by remember { mutableStateOf(false) }
+//    var price by
 
 
 //    var additionalImages by remember { mutableStateOf(mutableListOf<String>()) }
@@ -129,9 +132,17 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
             )
 
             OutlinedTextField(
+                value = pricePerDay,
+                onValueChange = { pricePerDay = it },
+                label = { Text("Price Per Day") },
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
                 value = price,
                 onValueChange = { price = it },
-                label = { Text("Price Per Day") },
+                label = { Text("Sales Price") },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -242,35 +253,42 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
 
             Button(
                 onClick = {
-                    if (name.isNotEmpty() && description.isNotEmpty() && price.isNotEmpty() && place.isNotEmpty()) {
+                    if (name.isNotEmpty() && description.isNotEmpty() &&pricePerDay.isNotEmpty() &&price.isNotEmpty() && place.isNotEmpty()) {
+                        val pricePerDayValue = pricePerDay.toDoubleOrNull()
                         val priceValue = price.toDoubleOrNull()
-                        if (priceValue == null) {
+                        if (priceValue == null ) {
                             Toast.makeText(context, "Invalid price format", Toast.LENGTH_SHORT).show()
                             return@Button
                         }
 
-                        val newRV = RV(
-                            id = UUID.randomUUID().toString(),
-                            name = name,
-                            description = description,
-                            pricePerDay = priceValue,
-                            place = place,
-                            imageUrl = imageUrl,
-                            ownerId = userId,
-                            isForSale = isForSale,
-                            isForRental = isForRental,
-                            additionalImages = additionalImages, // Corrected to use the current list
-                            insurance = emptyMap(),
-                            driverLicenceRequired = "",
-                            kilometerLimitation = 0,
-                            status = "Available",
-                            createdAt = Timestamp.now(),
-                            bookedDates = emptyList()
-                        )
+                        val newRV = pricePerDayValue?.let {
+                            RV(
+                                id = UUID.randomUUID().toString(),
+                                name = name,
+                                description = description,
+                                pricePerDay = it,
+                                price = priceValue,
+                                place = place,
+                                imageUrl = imageUrl,
+                                ownerId = userId,
+                                isForSale = isForSale,
+                                isForRental = isForRental,
+                                additionalImages = additionalImages, // Corrected to use the current list
+                                insurance = emptyMap(),
+                                driverLicenceRequired = "",
+                                kilometerLimitation = 0,
+                                status = "Available",
+                                createdAt = Timestamp.now(),
+                                bookedDates = emptyList()
+                            )
+                        }
 
-                        rvViewModel.addRV(newRV) // Calls ViewModel function
+                        if (newRV != null) {
+                            rvViewModel.addRV(newRV)
+                        } // Calls ViewModel function
                         name =""
                         description=""
+                        pricePerDay=""
                         price=""
                         place=""
                         imageUrl=""

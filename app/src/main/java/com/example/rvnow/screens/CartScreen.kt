@@ -41,6 +41,7 @@ import androidx.compose.runtime.livedata.observeAsState
 
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import com.example.rvnow.model.CartItem
@@ -63,16 +64,74 @@ fun CartScreen(
         }
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(10.dp)) {
 //        Text("Your Cart", style = MaterialTheme.typography.h4)
-        Box(
-            modifier = Modifier.fillMaxWidth().height(42.dp)
-        ){
-            Text("Shopping Cart",style = TextStyle(fontSize = 24.sp) )
 
+//        Row {
+//
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(42.dp)
+//            ){
+//                Text("Shopping Cart",style = TextStyle(fontSize = 24.sp) )
+//
+//            }
+//
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(bottom = 16.dp) // Add padding to move it up slightly from the bottom
+//            ) {
+//                Button(
+//                    onClick = { /* ... */ },
+//                    modifier = Modifier
+//                        .align(Alignment.BottomEnd) // Position it at the bottom end of the screen
+//                        .padding(16.dp) // Optional padding to make the button text more readable
+//                ) {
+//                    Text(
+//                        text = "Proceed to Checkout",
+//                        style = TextStyle(
+//                            fontSize = 18.sp, // Adjust font size if necessary
+//                            color = Color.Green
+//                        ),
+//                        maxLines = 1, // Ensure text doesn't overflow to multiple lines
+//                        overflow = TextOverflow.Ellipsis // Ensure text is ellipsized if it's too long
+//                    )
+//                }
+//            }
+//        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
+            horizontalArrangement = Arrangement.SpaceBetween, // Space between the text and button
+            verticalAlignment = Alignment.CenterVertically // Align text and button vertically centered
+        ) {
+            // Shopping Cart Title Text
+            Text(
+                text = "Shopping Cart",
+                style = TextStyle(fontSize = 20.sp)
+            )
+
+            // Proceed to Checkout Button
+            Button(
+                onClick = { /* Handle checkout */ },
+                modifier = Modifier.padding(16.dp) // Optional padding for the button
+            ) {
+                Text(
+                    text = "Proceed to Checkout",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        color = Color.Green
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
 
-//        Spacer(modifier = Modifier.height(46.dp))
 
         if (!isLoggedIn) {
 
@@ -98,6 +157,14 @@ fun CartScreen(
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
+
+                val totalPrice = cartItems.sumOf { item ->
+                    val rentalPrice = item.pricePerDay?.takeIf { it > 0 } ?: 0.0
+                    val salePrice = item.price?.takeIf { it > 0 } ?: 0.0
+                    val unitPrice = if (rentalPrice > 0) rentalPrice else salePrice
+                    unitPrice * item.quantity
+                }
+
                 // LazyColumn to display cart items
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth()
@@ -105,31 +172,47 @@ fun CartScreen(
                     items(cartItems) { item ->
                         CartItemCard(item, rvViewModel)
                     }
+
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 16.dp),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Text(
+                                text = "Total Price: $${"%.2f".format(totalPrice)}",
+                                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            )
+                        }
+                    }
+
                 }
 
                 // Box to hold the button at the bottom-right corner
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp) // Add padding to move it up slightly from the bottom
-                ) {
-                    Button(
-                        onClick = { /* ... */ },
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd) // Position it at the bottom end of the screen
-                            .padding(16.dp) // Optional padding to make the button text more readable
-                    ) {
-                        Text(
-                            text = "Proceed to Checkout",
-                            style = TextStyle(
-                                fontSize = 18.sp, // Adjust font size if necessary
-                                color = Color.Green
-                            ),
-                            maxLines = 1, // Ensure text doesn't overflow to multiple lines
-                            overflow = TextOverflow.Ellipsis // Ensure text is ellipsized if it's too long
-                        )
-                    }
-                }
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(bottom = 16.dp) // Add padding to move it up slightly from the bottom
+//                ) {
+//                    Button(
+//                        onClick = { /* ... */ },
+//                        modifier = Modifier
+//                            .align(Alignment.BottomEnd) // Position it at the bottom end of the screen
+//                            .padding(16.dp) // Optional padding to make the button text more readable
+//                    ) {
+//                        Text(
+//                            text = "Proceed to Checkout",
+//                            style = TextStyle(
+//                                fontSize = 18.sp, // Adjust font size if necessary
+//                                color = Color.Green
+//                            ),
+//                            maxLines = 1, // Ensure text doesn't overflow to multiple lines
+//                            overflow = TextOverflow.Ellipsis // Ensure text is ellipsized if it's too long
+//                        )
+//                    }
+//                }
             }
 
 
@@ -206,10 +289,17 @@ fun CartItemCard(
                     text = item.name,
 //                    style = MaterialTheme.typography.h6
                 )
-                Text(
-                    text = "$${item.pricePerDay}/day",
-//                    style = MaterialTheme.typography.body1
-                )
+
+                if (item.price == 0.0) {
+                    Text(
+                        text = "$${item.pricePerDay}/day"
+                    )
+                } else {
+                    Text(
+                        text = "$${item.price}/item"
+                    )
+                }
+
 
                 // Quantity Controls
                 Row(

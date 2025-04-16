@@ -225,7 +225,7 @@ class RVInformation {
 
             cartRef.set(rvData + mapOf(
                 "addedAt" to FieldValue.serverTimestamp(),
-                "quantity" to FieldValue.increment(1) // For quantity management
+//                "quantity" to FieldValue.increment(1) // For quantity management
             )).await()
             true
         } catch (e: Exception) {
@@ -293,6 +293,8 @@ class RVInformation {
             throw e
         }
     }
+
+
 }
 
 

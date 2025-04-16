@@ -8,6 +8,7 @@ data class CartItem(
     val name: String = "",
     val imageUrl: String = "",
     val pricePerDay: Double = 0.0,
+    val price:Double = 0.0,
     val quantity: Int = 1,
-    val createdat: Timestamp = Timestamp.now()
+    val createdAt: Timestamp = Timestamp.now()
 )

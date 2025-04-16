@@ -4,14 +4,18 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")  // Firebase plugin
 }
-
+//android {
+//    defaultConfig {
+//        minSdkVersion 26
+//    }
+//}
 android {
     namespace = "com.example.rvnow"
     compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.rvnow"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"

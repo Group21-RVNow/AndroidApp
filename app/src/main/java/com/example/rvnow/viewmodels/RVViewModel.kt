@@ -313,35 +313,48 @@ class RVViewModel : ViewModel() {
 
 
 
-    fun addToCart(userId: String, rv: RV, callback: (Boolean) -> Unit) {
+    fun addToCart(
+        userId: String,
+        rv: RV,
+        sourcePage: String,
+        isForSale: Boolean,
+        quantity: Int,
+        callback: (Boolean) -> Unit
+    ) {
         viewModelScope.launch {
             try {
+                val isFromSales = sourcePage == "sales" || (sourcePage == "home" && isForSale)
+                val isFromRental = sourcePage == "rental" || (sourcePage == "home" && !isForSale)
+
                 val cartItemData = mapOf(
                     "rvId" to rv.id,
                     "name" to rv.name,
                     "imageUrl" to rv.imageUrl,
-                    "pricePerDay" to rv.pricePerDay,
-
-                    "quantity" to 1
+                    "price" to if (isFromSales) rv.price else 0.0,
+                    "pricePerDay" to if (isFromRental) rv.pricePerDay else 0.0,
+                    "quantity" to quantity
                 )
 
                 val success = rvApiService.addToCart(userId, rv.id, cartItemData)
+
                 if (success) {
-                    // Update local state
                     _cartItems.value += CartItem(
                         rvId = rv.id,
                         name = rv.name,
                         imageUrl = rv.imageUrl,
-                        pricePerDay = rv.pricePerDay
+                        price = if (isFromSales) rv.price else 0.0,
+                        pricePerDay = if (isFromRental) rv.pricePerDay else 0.0,
+                        quantity = quantity
                     )
                 }
+
                 callback(success)
             } catch (e: Exception) {
-                // Call the callback with false if there's an error
                 callback(false)
             }
         }
     }
+
 
     // Function to fetch cart items from Firestore
     fun fetchCartItems(userId: String) {
@@ -376,6 +389,25 @@ class RVViewModel : ViewModel() {
         }
     }
 
+//    fun checkout(userId: String, callback: (Boolean) -> Unit) {
+//        viewModelScope.launch {
+//            try {
+////                1. Process payment (implement your payment logic)
+//                val paymentSuccess = rvApiService.processPayment(userId, _cartItems)
+//
+////                2. If successful, clear cart
+//                if (paymentSuccess) {
+//                    _cartItems.clear()
+//                    rvApiService.clearCart(userId)
+//                    callback(true)
+//                } else {
+//                    callback(false)
+//                }
+//            } catch (e: Exception) {
+//                callback(false)
+//            }
+//        }
+//    }
 
     fun addRV(rv: RV) {
         viewModelScope.launch {
@@ -435,25 +467,7 @@ class RVViewModel : ViewModel() {
 
 
 
-//    fun checkout(userId: String, callback: (Boolean) -> Unit) {
-//        viewModelScope.launch {
-//            try {
-// 1. Process payment (implement your payment logic)
-//                val paymentSuccess = rvApiService.processPayment(userId, _cartItems)
 
-// 2. If successful, clear cart
-//                if (paymentSuccess) {
-//                    _cartItems.clear()
-//                    rvApiService.clearCart(userId)
-//                    callback(true)
-//                } else {
-//                    callback(false)
-//                }
-//            } catch (e: Exception) {
-//                callback(false)
-//            }
-//        }
-//    }
 
 // 收藏/取消收藏
 //    fun toggleFavorite(rvId: String) {

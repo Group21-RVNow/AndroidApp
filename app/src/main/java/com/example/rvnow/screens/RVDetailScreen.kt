@@ -1,93 +1,61 @@
 // Add a new DetailScreen composable for displaying detailed information of the RV
 package com.example.rvnow
 
+//import androidx.compose.runtime.Composable
+//import androidx.compose.material.*
+
+//import android.app.DatePickerDialog
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+//import java.time.temporal.ChronoUnit
+import android.app.DatePickerDialog
+import android.os.Build
 import android.util.Log
-import android.widget.RatingBar
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
-//import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
-import com.example.rvnow.model.RV
-import com.example.rvnow.viewmodels.RVViewModel
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-//import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.runtime.*
-
-import androidx.compose.material3.Icon
-
-import androidx.compose.foundation.layout.Row
-
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-
-import androidx.compose.foundation.layout.Column
-
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
-
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.runtime.livedata.observeAsState
-
-import androidx.compose.runtime.setValue
-
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.style.TextAlign
 import com.example.rvnow.model.Comment
 import com.example.rvnow.model.Rating
-
-import java.util.*
 import com.example.rvnow.viewmodels.AuthViewModel
-import androidx.compose.foundation.layout.Column as Column
-import android.widget.Toast
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.FlipToBack
-import androidx.compose.material.icons.filled.StarHalf
-import androidx.compose.ui.platform.LocalContext
-
+import com.example.rvnow.viewmodels.RVViewModel
+import java.util.*
+import java.time.temporal.ChronoUnit
 
 
 @Composable
@@ -96,7 +64,7 @@ fun StarRatingBar(
     averageRating: Float,
     onRatingChanged: (Float) -> Unit,
     modifier: Modifier = Modifier,
-    starCount: Int = 1
+    starCount: Int = 1,
 ) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         // Display stars
@@ -131,7 +99,7 @@ fun StarRatingBar(
 fun StarRatingBar1(
     maxStars: Int = 5,
     rating: Float,
-    onRatingChanged: (Float) -> Unit
+    onRatingChanged: (Float) -> Unit,
 ) {
     val density = LocalDensity.current.density
     val starSize = (12f * density).dp
@@ -164,13 +132,15 @@ fun StarRatingBar1(
 
 
 
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RVDetailScreen(
     rvId: String,
     rvViewModel: RVViewModel,
     authViewModel: AuthViewModel,
     navController: NavController,
-    sourcePage: String
+    sourcePage: String,
 ) {
     // Collect the list of RVs from the ViewModel
     val rvList by rvViewModel.rvs.collectAsState()
@@ -227,6 +197,7 @@ fun RVDetailScreen(
         Log.d("AverageRating", "Loading Average Rating for RV: ${rvId}")
     }
 
+
 //    LaunchedEffect(rv.id) {
 //        rvViewModel.loadAverageRating(rv.id)
 //        Log.d("AverageRating", "Loading Average Rating for RV: ${rv.id}")
@@ -265,7 +236,7 @@ fun RVDetailScreen(
         ) {
             IconButton(
                 onClick = {
-                    // Go back to the Home screen
+
                     navController.navigate(sourcePage) {
                         // Optional: clear backstack to avoid going back again
                         popUpTo(sourcePage) { inclusive = true }
@@ -282,7 +253,9 @@ fun RVDetailScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        LazyColumn(modifier = Modifier.padding(10.dp)) {
+        LazyColumn(
+            modifier = Modifier.background(Color.White)
+        ) {
 
 
             rv?.let {
@@ -302,7 +275,7 @@ fun RVDetailScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
 //                                .padding(16.dp)
-                                .background(color = Color.LightGray)
+                                .background(color = Color.White)
 //                                .RoundedCornerShape(19.dp)
 //                                .border(
 //                                    1.dp,
@@ -310,7 +283,7 @@ fun RVDetailScreen(
 //                                    RoundedCornerShape(19.dp)
 //                                ) // Border to visually separate the content
                         ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
+                            Column(modifier = Modifier.fillMaxWidth()) {
                                 // Product Image
                                 Image(
                                     painter = rememberAsyncImagePainter(model = it.imageUrl),
@@ -325,153 +298,163 @@ fun RVDetailScreen(
 
 
 
-                                Box(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    // Display stars and average rating
-                                    StarRatingBar(
-                                        rating = rating,
-                                        averageRating = averageRating, // Show average behind the stars
-                                        onRatingChanged = { newRating ->
-                                            rating = newRating
-                                        }
-                                    )
-                                }
+//                                Box(
+//                                    modifier = Modifier.fillMaxWidth(),
+//                                    contentAlignment = Alignment.Center
+//                                ) {
+//                                    // Display stars and average rating
+//                                    StarRatingBar(
+//                                        rating = rating,
+//                                        averageRating = averageRating, // Show average behind the stars
+//                                        onRatingChanged = { newRating ->
+//                                            rating = newRating
+//                                        }
+//                                    )
+//                                }
 
 
                                 Spacer(modifier = Modifier.height(8.dp))
-                                // Row for rating and add to cart button
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
 
-                                    ) {
+                                Column (modifier = Modifier.background(Color.White).padding(15.dp)){
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+
+                                        ) {
 
 
 //for the favourites
-
-
-                                    IconButton(
-                                        onClick = {
-                                            if (isProcessingFavorite) return@IconButton
-                                            // Optimistic UI update
-                                            isFavorite = !isFavorite
-
-                                            currentUser?.id?.let { userId ->
-                                                isProcessingFavorite = true
-                                                rvViewModel.toggleFavorite(
-                                                    userId = userId,
-                                                    rvId = rvId,
-                                                    name = name,
-                                                    isForRental = isForRental,
-                                                    imageUrl = imageUrl,
-                                                    isForSale = isForSale
-                                                ) { success ->
-                                                    isProcessingFavorite = false
-                                                    if (success) {
-                                                        // Success - state is already updated
-                                                        Toast.makeText(
-                                                            context,
-                                                            if (isFavorite) "Added to favorites" else "Removed from favorite",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                    } else {
-                                                        // Show error and revert UI state
-                                                        isFavorite = !isFavorite
-                                                        Toast.makeText(
-                                                            context,
-                                                            "Failed to update favorites",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                    }
-                                                }
-                                            } ?: run {
-                                                showWarningDialog = true
+                                        StarRatingBar(
+                                            rating = rating,
+                                            averageRating = averageRating, // Show average behind the stars
+                                            onRatingChanged = { newRating ->
+                                                rating = newRating
                                             }
-                                        },
-                                        enabled = !isProcessingFavorite
-                                    ) {
-                                        if (isProcessingFavorite) {
-                                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                                        } else {
-                                            Icon(
-                                                imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                                                contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                                                tint = if (isFavorite) Color.Red else Color.Gray,
-                                                modifier = Modifier.size(44.dp)
-                                            )
-                                        }
-                                    }
+                                        )
 
 
+                                        IconButton(
+                                            onClick = {
+                                                if (isProcessingFavorite) return@IconButton
+                                                // Optimistic UI update
+                                                isFavorite = !isFavorite
 
-                                    IconButton(
-                                        onClick = {
-                                            if (isAddingToCart) return@IconButton
-
-                                            currentUser?.id?.let { userId ->
-                                                isAddingToCart = true
-                                                rvViewModel.addToCart(userId, it) {
-//                                                    success ->  // Using 'it' here
-//                                                    isAddingToCart = false
-                                                        success ->
-                                                    isAddingToCart = false
-                                                    if (success) {
-                                                        isAddedToCart = true
+                                                currentUser?.id?.let { userId ->
+                                                    isProcessingFavorite = true
+                                                    rvViewModel.toggleFavorite(
+                                                        userId = userId,
+                                                        rvId = rvId,
+                                                        name = name,
+                                                        isForRental = isForRental,
+                                                        imageUrl = imageUrl,
+                                                        isForSale = isForSale
+                                                    ) { success ->
+                                                        isProcessingFavorite = false
+                                                        if (success) {
+                                                            // Success - state is already updated
+                                                            Toast.makeText(
+                                                                context,
+                                                                if (isFavorite) "Added to favorites" else "Removed from favorite",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        } else {
+                                                            // Show error and revert UI state
+                                                            isFavorite = !isFavorite
+                                                            Toast.makeText(
+                                                                context,
+                                                                "Failed to update favorites",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        }
                                                     }
-                                                    Toast.makeText(
-                                                        context,
-                                                        if (success) "Added to cart"
-                                                        else "Failed to add to cart",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
+                                                } ?: run {
+                                                    showWarningDialog = true
                                                 }
-                                            } ?: run { showWarningDialog = true }
+                                            },
+                                            enabled = !isProcessingFavorite
+                                        ) {
+                                            if (isProcessingFavorite) {
+                                                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                            } else {
+                                                Icon(
+                                                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                                    contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+                                                    tint = if (isFavorite) Color.Red else Color.Gray,
+                                                    modifier = Modifier.size(35.dp)
+                                                )
+                                            }
                                         }
-                                    ) {
-                                        if (isAddingToCart) {
-                                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                                        } else {
-                                            Icon(
-                                                imageVector = Icons.Default.ShoppingCart,
-                                                contentDescription = "Add to cart",
-                                                modifier = Modifier.size(44.dp),
-                                                tint = if (isAddedToCart) Color(0xFF4CAF50) else Color.Black
-                                            )
-                                        }
+
+
+//                                    IconButton(
+//                                        onClick = {
+//                                            if (isAddingToCart) return@IconButton
+//
+//                                            currentUser?.id?.let { userId ->
+//                                                isAddingToCart = true
+//                                                rvViewModel.addToCart(userId, it) {
+////
+//                                                        success ->
+//                                                    isAddingToCart = false
+//                                                    if (success) {
+//                                                        isAddedToCart = true
+//                                                    }
+//                                                    Toast.makeText(
+//                                                        context,
+//                                                        if (success) "Added to cart"
+//                                                        else "Failed to add to cart",
+//                                                        Toast.LENGTH_SHORT
+//                                                    ).show()
+//                                                }
+//                                            } ?: run { showWarningDialog = true }
+//                                        }
+//                                    ) {
+//                                        if (isAddingToCart) {
+//                                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+//                                        } else {
+//                                            Icon(
+//                                                imageVector = Icons.Default.ShoppingCart,
+//                                                contentDescription = "Add to cart",
+//                                                modifier = Modifier.size(44.dp),
+//                                                tint = if (isAddedToCart) Color(0xFF4CAF50) else Color.Black
+//                                            )
+//                                        }
+//                                    }
+//                                }
+//                            }
                                     }
-                                }
-                            }
-                        }
 
 
+                                    // Product Description
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Text(
+                                        text = "Vehicle Information:",
+                                        fontSize = 28.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Text(
+                                        text = "Description: ${it.description}",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
 
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = "Departure: ${it.place}",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
 
-                        // Product Description
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Description: ${it.description}",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = "Availability: ${it.status}",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
 
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Departure: ${it.place}",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Availability: ${it.status}",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(15.dp))
 //                        Text(
 //                            text = if (sourcePage == "rental") {
 //                                "Price Per Day: \$${it.pricePerDay}"
@@ -481,230 +464,486 @@ fun RVDetailScreen(
 //                            fontSize = 16.sp,
 //                            fontWeight = FontWeight.Bold
 //                        )
-                        Text(
-                            text = when (sourcePage.lowercase()) {
-                                "rental" -> "Price Per Day: \$${it.pricePerDay}"
-                                "sales" -> "Sales Price: \$${it.price ?: "N/A"}"
-                                "home" -> {
-                                    if (!it.isForSale && it.isPopular) {
-                                        "Price Per Day: \$${it.pricePerDay}"
-                                    } else if (it.isForSale && it.isPopular) {
-                                        "Sales Price: \$${it.price }"
-                                    } else {
-                                        "no Price: N/A"
-                                    }
-                                }
-                                else -> "Price: N/A"
-                            },
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                                    Text(
+                                        text = when (sourcePage.lowercase()) {
+                                            "rental" -> "Price Per Day: \$${it.pricePerDay}"
+                                            "sales" -> "Sales Price: \$${it.price ?: "N/A"}"
+                                            "home" -> {
+                                                if (!it.isForSale && it.isPopular) {
+                                                    "Price Per Day: \$${it.pricePerDay}"
+                                                } else if (it.isForSale && it.isPopular) {
+                                                    "Sales Price: \$${it.price}"
+                                                } else {
+                                                    "no Price: N/A"
+                                                }
+                                            }
+
+                                            else -> "Price: N/A"
+                                        },
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
 
 
 //                         it.isForSale && it.isPopular
 
 
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Driver Licence Required: ${it.driverLicenceRequired}",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = "Driver Licence Required: ${it.driverLicenceRequired}",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
 
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Additional Images:",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = "Additional Images:",
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(8.dp))
 
-                        LazyRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            items(it.additionalImages) { imageUrl ->
-                                AsyncImage(
-                                    model = imageUrl,
-                                    contentDescription = "Image",
-                                    modifier = Modifier
-                                        .size(150.dp)
-                                        .clip(RoundedCornerShape(8.dp)),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Spacer(modifier = Modifier.height(16.dp))
-//                        leave a rating:
-                        // Comment Input
-                        Text(
-                            text = "Leave a rating:",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.LightGray),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            // Display stars and average rating
-                            StarRatingBar1(
-                                rating = rating,
-//                                averageRating = averageRating, // Show average behind the stars
-                                onRatingChanged = { newRating ->
-                                    rating = newRating
-                                }
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-
-
-                        Button(
-                            onClick = {
-                                if (isLoggedIn) {
-                                    // Ensure the rating is within a valid range, e.g., 0.0 to 5.0
-                                    if (rating in 0.0..5.0) {
-                                        currentUser?.let { user ->
-                                            val newRating = Rating(
-                                                rating = rating,  // Use the rating value
-                                                userId = user.id  // User's UID
+                                    LazyRow(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        items(it.additionalImages) { imageUrl ->
+                                            AsyncImage(
+                                                model = imageUrl,
+                                                contentDescription = "Image",
+                                                modifier = Modifier
+                                                    .size(150.dp)
+                                                    .clip(RoundedCornerShape(8.dp)),
+                                                contentScale = ContentScale.Crop
                                             )
-                                            // Submit the rating
-                                            rvViewModel.addRating(rvId, newRating) {
-                                                // Clear comment and reset rating after successful submission
-                                                rating = 5f // Reset the rating to initial state
+                                        }
+                                    }
 
-                                                // Show success message using Toast
-                                                Toast.makeText(
-                                                    context,
-                                                    "Rating submitted successfully!",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
+                                    Spacer(modifier = Modifier.height(16.dp))
 
-                                                rvViewModel.loadAverageRating(rvId)
+                                    Spacer(modifier = Modifier.height(16.dp))
+//                        leave a rating:
+                                    // Comment Input
+                                    Text(
+                                        text = "Leave a Rating:",
+                                        fontSize = 28.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
 
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(Color.LightGray),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        // Display stars and average rating
+                                        StarRatingBar1(
+                                            rating = rating,
+//                                averageRating = averageRating, // Show average behind the stars
+                                            onRatingChanged = { newRating ->
+                                                rating = newRating
+                                            }
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+
+                                    Button(
+                                        onClick = {
+                                            if (isLoggedIn) {
+                                                // Ensure the rating is within a valid range, e.g., 0.0 to 5.0
+                                                if (rating in 0.0..5.0) {
+                                                    currentUser?.let { user ->
+                                                        val newRating = Rating(
+                                                            rating = rating,  // Use the rating value
+                                                            userId = user.id  // User's UID
+                                                        )
+                                                        // Submit the rating
+                                                        rvViewModel.addRating(rvId, newRating) {
+                                                            // Clear comment and reset rating after successful submission
+                                                            rating =
+                                                                5f // Reset the rating to initial state
+
+                                                            // Show success message using Toast
+                                                            Toast.makeText(
+                                                                context,
+                                                                "Rating submitted successfully!",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+
+                                                            rvViewModel.loadAverageRating(rvId)
+
+                                                        }
+                                                    }
+                                                } else {
+                                                    // Handle the case where the rating is out of the expected range
+                                                    showWarningDialog = true
+                                                }
+                                            } else {
+                                                showWarningDialog = true
+                                            }
+                                        },
+                                        modifier = Modifier.align(Alignment.End)
+                                    ) {
+                                        Text("Submit Rating")
+                                    }
+                                    Spacer(modifier = Modifier.height(14.dp))
+
+
+//for the shopping cart and quantity:
+                                    // State to hold the selected quantity
+                                    var quantity by remember { mutableStateOf(1) }
+                                    val rvViewModel: RVViewModel = viewModel()
+//                                val authViewModel: AuthViewModel = viewModel()
+                                    var startDate by remember { mutableStateOf("") }
+                                    var endDate by remember { mutableStateOf("") }
+//                                var place by remember { mutableStateOf("") }
+//                                val context = LocalContext.current
+//                                val rvList by rvViewModel.rvs.collectAsState()
+                                    val calendar = Calendar.getInstance()
+//                                var isSearchPerformed by remember { mutableStateOf(false) }
+
+                                    // Date Picker for Start Date
+                                    val startDatePickerDialog = DatePickerDialog(
+                                        context,
+                                        { _, year, month, dayOfMonth ->
+                                            startDate = "$dayOfMonth/${month + 1}/$year"
+                                        },
+                                        calendar.get(Calendar.YEAR),
+                                        calendar.get(Calendar.MONTH),
+                                        calendar.get(Calendar.DAY_OF_MONTH)
+                                    )
+
+                                    // Date Picker for End Date
+                                    val endDatePickerDialog = DatePickerDialog(
+                                        context,
+                                        { _, year, month, dayOfMonth ->
+                                            endDate = "$dayOfMonth/${month + 1}/$year"
+                                        },
+                                        calendar.get(Calendar.YEAR),
+                                        calendar.get(Calendar.MONTH),
+                                        calendar.get(Calendar.DAY_OF_MONTH)
+                                    )
+
+                                    val formatter = DateTimeFormatter.ofPattern("d/M/yyyy", Locale.getDefault())
+
+                                    val computedQuantity = when (sourcePage.lowercase()) {
+                                        "rental" -> {
+                                            if (startDate.isNotEmpty() && endDate.isNotEmpty()) {
+                                                try {
+                                                    val start = LocalDate.parse(startDate, formatter)
+                                                    val end = LocalDate.parse(endDate, formatter)
+                                                    val daysBetween = ChronoUnit.DAYS.between(start, end).toInt().coerceAtLeast(1)
+
+                                                    Log.d("RentalQuantity", "Calculated Quantity (Days): $daysBetween")
+
+                                                    daysBetween
+                                                } catch (e: Exception) {
+                                                    Log.e("DateError", "Invalid dates: ${e.message}")
+                                                    1
+                                                }
+                                            } else 1
+                                        }
+
+                                        "sales" -> quantity
+
+                                        "home" -> {
+                                            when {
+                                                !it.isForSale && it.isPopular -> {
+                                                    if (startDate.isNotEmpty() && endDate.isNotEmpty()) {
+                                                        try {
+                                                            val start = LocalDate.parse(startDate, formatter)
+                                                            val end = LocalDate.parse(endDate, formatter)
+                                                            val daysBetween = ChronoUnit.DAYS.between(start, end).toInt().coerceAtLeast(1)
+
+                                                            Log.d("HomeQuantity", "Calculated Quantity (Days): $daysBetween")
+
+                                                            daysBetween
+                                                        } catch (e: Exception) {
+                                                            Log.e("DateError", "Invalid dates: ${e.message}")
+                                                            1
+                                                        }
+                                                    } else 1
+                                                }
+
+                                                it.isForSale && it.isPopular -> quantity
+                                                else -> 1
+                                            }
+                                        }
+
+                                        else -> 1
+                                    }
+
+                                    Log.d("RentalDateCheck", "Start: $startDate, End: $endDate")
+                                    Log.d("ComputedQuantity", "Computed Quantity: $computedQuantity")
+
+
+
+                                    Column(
+//                            verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.fillMaxWidth(),
+//                            horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        // Price display based on conditions for rental, sales, and home
+                                        Text(
+                                            text = "Choose Quantity:",
+
+// //                               dont delete
+//                                when (sourcePage.lowercase()) {
+//                                    "rental" -> "Choose quantity: \$${it.pricePerDay}"
+//                                    "sales" -> "SChoose quantity: \$${it.price ?: "N/A"}"
+//                                    "home" -> {
+//                                        when {
+//                                            !it.isForSale && it.isPopular -> "Choose quantity: \$${it.pricePerDay}"
+//                                            it.isForSale && it.isPopular -> "Choose quantity: \$${it.price}"
+//                                            else -> "No Price: N/A"
+//                                        }
+//                                    }
+//
+//                                    else -> "Price: N/A"
+//                                },
+                                            fontSize = 28.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+
+                                        // Conditional UI for Rental or Home (Date Picker for rental dates)
+                                        if (sourcePage.lowercase() == "rental" || (sourcePage.lowercase() == "home" && !it.isForSale)) {
+                                            // Start Date Field
+                                            Row(modifier = Modifier.padding(10.dp)) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .weight(1f)
+                                                        .clickable { startDatePickerDialog.show() }
+
+                                                ) {
+                                                    OutlinedTextField(
+                                                        value = startDate,
+                                                        onValueChange = { newValue ->
+                                                            startDate = newValue
+                                                        },
+                                                        readOnly = true,  // Prevent manual input
+                                                        label = { Text("Start Date") },
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .focusable(false)
+                                                    )
+                                                }
+
+                                                Spacer(modifier = Modifier.width(20.dp))
+
+                                                OutlinedTextField(
+                                                    value = endDate,
+                                                    onValueChange = { newValue ->
+                                                        endDate = newValue
+                                                    },
+                                                    readOnly = true,  // Prevent typing
+                                                    label = { Text("End Date") },
+                                                    modifier = Modifier
+                                                        .weight(1f)
+                                                        .clickable { endDatePickerDialog.show() } // Open Date Picker
+                                                )
+                                            }
+
+
+                                        }
+
+                                        // Conditional UI for Sales (Quantity selection for cart)
+                                        if (sourcePage.lowercase() == "sales" || (sourcePage.lowercase() == "home" && it.isForSale)) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Center
+                                            ) {
+                                                Text("Quantity: ", fontSize = 16.sp)
+
+                                                // Decrease Button
+                                                IconButton(onClick = {
+                                                    if (quantity > 1) {
+                                                        quantity -= 1
+                                                    }
+                                                }) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Remove,
+                                                        contentDescription = "Decrease Quantity"
+                                                    )
+                                                }
+
+                                                Text(
+                                                    "$quantity",
+                                                    fontSize = 16.sp,
+                                                    modifier = Modifier.padding(8.dp)
+                                                )
+
+                                                // Increase Button
+                                                IconButton(onClick = {
+                                                    quantity += 1
+                                                }) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Add,
+                                                        contentDescription = "Increase Quantity"
+                                                    )
+                                                }
+                                            }
+                                        }
+
+
+                                        // Add to Cart Button
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.End
+                                        ) {
+                                            IconButton(
+                                                onClick = {
+                                                    if (isAddingToCart) return@IconButton
+
+                                                    currentUser?.id?.let { userId ->
+                                                        isAddingToCart = true
+                                                        rvViewModel.addToCart(
+                                                            userId = userId,
+                                                            rv = it,
+                                                            sourcePage = sourcePage,
+                                                            isForSale = it.isForSale, // or calculate based on sourcePage/home logic if needed
+                                                            quantity = computedQuantity,
+
+                                                            ) { success ->
+                                                            isAddingToCart = false
+                                                            if (success) {
+                                                                isAddedToCart = true
+                                                            }
+                                                            Toast.makeText(
+                                                                context,
+                                                                if (success) "Added to cart"
+                                                                else "Failed to add to cart",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        }
+                                                    } ?: run { showWarningDialog = true }
+                                                }
+                                            ) {
+                                                if (isAddingToCart) {
+                                                    CircularProgressIndicator(
+                                                        modifier = Modifier.size(24.dp)
+                                                    )
+                                                } else {
+                                                    Icon(
+                                                        imageVector = Icons.Default.ShoppingCart,
+                                                        contentDescription = "Add to cart",
+                                                        modifier = Modifier.size(44.dp),
+                                                        tint = if (isAddedToCart) Color(0xFF4CAF50) else Color.Black
+                                                    )
+                                                }
+                                            }
+
+                                        }
+                                    }
+
+
+                                    // Comment Input
+                                    Spacer(modifier = Modifier.height(15.dp))
+                                    Text(
+                                        text = "Leave a Comment:",
+                                        fontSize = 28.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    OutlinedTextField(
+                                        value = commentText,
+                                        onValueChange = { commentText = it },
+                                        label = { Text("Write a comment...") },
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                    // Submit Comment Button
+                                    Button(
+                                        onClick = {
+                                            if (isLoggedIn) {
+                                                if (commentText.isNotBlank()) {
+                                                    currentUser?.let { user ->
+                                                        val newComment = Comment(
+                                                            text = commentText,
+                                                            userId = user.id,
+                                                            email = user.email ?: "unknown@example.com"
+                                                        )
+                                                        rvViewModel.addComment(rvId, newComment)
+                                                        commentText = ""
+                                                    }
+                                                }
+                                            } else {
+                                                showWarningDialog = true
+                                            }
+                                        },
+                                        modifier = Modifier.align(Alignment.End)
+                                    ) {
+                                        Text("Submit Comment")
+                                    }
+
+                                    // Warning Dialog if the user is not logged in
+                                    if (!isLoggedIn && showWarningDialog) {
+                                        AlertDialog(
+                                            onDismissRequest = { showWarningDialog = false },
+                                            title = { Text("Not Logged In") },
+                                            text = { Text("You need to be logged in to submit a comment.") },
+                                            confirmButton = {
+                                                Button(onClick = { showWarningDialog = false }) {
+                                                    Text("OK")
+                                                }
+                                            }
+                                        )
+                                    }
+
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    if (comments.isNotEmpty()) {
+                                        Text(
+                                            text = "Comments:",
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Column {
+                                            comments.forEach { comment ->
+                                                Card(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(vertical = 4.dp)
+                                                ) {
+                                                    Column(modifier = Modifier.padding(8.dp)) {
+                                                        Text(
+                                                            text = comment.text,
+                                                            fontSize = 14.sp
+                                                        )
+                                                        Row(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            horizontalArrangement = Arrangement.End
+                                                        ) {
+                                                            Text(
+                                                                text = comment.email ?: "",
+                                                                fontSize = 12.sp,
+                                                                color = Color.Gray
+                                                            )
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     } else {
-                                        // Handle the case where the rating is out of the expected range
-                                        showWarningDialog = true
-                                    }
-                                } else {
-                                    showWarningDialog = true
-                                }
-                            },
-                            modifier = Modifier.align(Alignment.End)
-                        ) {
-                            Text("Submit Rating")
-                        }
-
-
-                        // Comment Input
-                        Text(
-                            text = "Leave a Comment:",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        OutlinedTextField(
-                            value = commentText,
-                            onValueChange = { commentText = it },
-                            label = { Text("Write a comment...") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        // Submit Comment Button
-                        Button(
-                            onClick = {
-                                if (isLoggedIn) {
-                                    if (commentText.isNotBlank()) {
-                                        currentUser?.let { user ->
-                                            val newComment = Comment(
-                                                text = commentText,
-                                                userId = user.id,
-                                                email = user.email ?: "unknown@example.com"
-                                            )
-                                            rvViewModel.addComment(rvId, newComment)
-                                            commentText = ""
-                                        }
-                                    }
-                                } else {
-                                    showWarningDialog = true
-                                }
-                            },
-                            modifier = Modifier.align(Alignment.End)
-                        ) {
-                            Text("Submit Comment")
-                        }
-
-                        // Warning Dialog if the user is not logged in
-                        if (!isLoggedIn && showWarningDialog) {
-                            AlertDialog(
-                                onDismissRequest = { showWarningDialog = false },
-                                title = { Text("Not Logged In") },
-                                text = { Text("You need to be logged in to submit a comment.") },
-                                confirmButton = {
-                                    Button(onClick = { showWarningDialog = false }) {
-                                        Text("OK")
-                                    }
-                                }
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        if (comments.isNotEmpty()) {
-                            Text(
-                                text = "Comments:",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Column {
-                                comments.forEach { comment ->
-                                    Card(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 4.dp)
-                                    ) {
-                                        Column(modifier = Modifier.padding(8.dp)) {
-                                            Text(
-                                                text = comment.text,
-                                                fontSize = 14.sp
-                                            )
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.End
-                                            ) {
-                                                Text(
-                                                    text = comment.email ?: "",
-                                                    fontSize = 12.sp,
-                                                    color = Color.Gray
-                                                )
-                                            }
-                                        }
+                                        Text(
+                                            text = "RV comments not found.",
+                                            modifier = Modifier.fillMaxWidth(),
+                                            color = Color.Red
+                                        )
                                     }
                                 }
                             }
-                        } else {
-                            Text(
-                                text = "RV comments not found.",
-                                modifier = Modifier.fillMaxWidth(),
-                                color = Color.Red
-                            )
                         }
                     }
                 }
             }
         }
-    }
+                                }
+
+
 }
 
 
