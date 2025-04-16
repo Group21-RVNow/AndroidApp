@@ -290,7 +290,8 @@ fun RVDetailScreen(
                                     contentDescription = it.name,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(300.dp),
+                                        .height(300.dp)
+                                        .clip(RoundedCornerShape(16.dp)),
                                     contentScale = ContentScale.Crop
                                 )
 
