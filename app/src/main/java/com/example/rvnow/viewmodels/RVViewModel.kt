@@ -36,9 +36,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.Image
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.State
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import com.example.rvnow.model.RVType
+import com.google.firebase.Timestamp
+import kotlinx.coroutines.CancellationException
 
 class RVViewModel : ViewModel() {
     private val rvApiService = RVInformation()
@@ -62,12 +71,14 @@ class RVViewModel : ViewModel() {
     private val _ratings = MutableStateFlow<List<Comment>>(emptyList())
     val ratings: StateFlow<List<Comment>> = _ratings
 
+    private val _fetchedFavourites = MutableStateFlow<List<Favorite>>(emptyList())
+    val fetchedFavourites: StateFlow<List<Favorite>> = _fetchedFavourites
 
     private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
     val cartItems: StateFlow<List<CartItem>> = _cartItems
 
-    private val _fetchedFavourites= MutableStateFlow<List<Favorite>>(emptyList())
-    val fetchedFavourites: StateFlow<List<Favorite>> = _fetchedFavourites
+//    private val _fetchedFavourites= MutableStateFlow<List<Favorite>>(emptyList())
+//    val fetchedFavourites: StateFlow<List<Favorite>> = _fetchedFavourites
 
     private val _averageRating = MutableStateFlow(0f) // Default to 0f
     val averageRating: StateFlow<Float> = _averageRating
@@ -78,6 +89,7 @@ class RVViewModel : ViewModel() {
 
     init {
         fetchRVs()
+//        loadFavorites("userId")
     }
 
     fun fetchRVs() {
@@ -108,18 +120,6 @@ class RVViewModel : ViewModel() {
         }
     }
 
-//    fun addRating(rvId: String, rating: Rating, onComplete: @Composable () -> Unit = {}) {
-//        viewModelScope.launch {
-//            try {
-//                rvApiService.addRating(rvId, rating)
-//                _commentStatus.value = "Rating submitted successfully"
-//                updateAverageRating(rvId, rating.rating)
-//                onComplete()
-//            } catch (e: Exception) {
-//                _commentStatus.value = "Failed to submit rating: ${e.message}"
-//            }
-//        }
-//    }
 
     fun addRating(rvId: String, rating: Rating, onComplete: () -> Unit = {}) {
         viewModelScope.launch {
@@ -160,52 +160,8 @@ class RVViewModel : ViewModel() {
         }
     }
 
-//    fun addFavourite(rvId: String, rating: Rating, onComplete: () -> Unit = {}) {
-//        viewModelScope.launch {
-//            try {
-//                rvApiService.addFavourite(rvId, rating)
-//                _commentStatus.value = "Favourite submitted successfully"
-////                loadCRatings(rvId)
-//                onComplete()
-//            } catch (e: Exception) {
-//                _commentStatus.value = "Failed to submit addFavourite: ${e.message}"
-//            }
-//        }
-//    }
-
-
-//    fun loadAverageRating(rvId: String) {
-//        viewModelScope.launch {
-//            try {
-//                rvApiService.getAverageRating(rvId) { averageRating ->
-//                    _averageRating.value = averageRating
-//                }
-//            }catch (e: Exception) {
-//                // Handle the exception (e.g., log it, show a user-friendly message)
-//            }
-//        }
-//    }
-
     private val _averageRatings = MutableStateFlow<Map<String, Float>>(emptyMap())
     val averageRatings: StateFlow<Map<String, Float>> = _averageRatings
-
-//    fun loadAverageRating(rvId: String) {
-//        viewModelScope.launch {
-//            try {
-//                rvApiService.getAverageRating(rvId) { averageRating ->
-//                    // Update the map with the new rating for this RV
-//                    _averageRatings.value = _averageRatings.value + (rvId to averageRating)
-//                }
-//            } catch (e: Exception) {
-//                Log.e("ViewModel", "Error loading average rating: ${e.message}")
-//                // Handle failure by keeping previous ratings
-//            }
-//        }
-//    }
-
-
-
-
 
 
     fun loadComments(rvId: String, onComplete: () -> Unit = {}) {
@@ -223,36 +179,7 @@ class RVViewModel : ViewModel() {
         }
     }
 
-    // Add these functions
-//    fun addToFavorites(userId: String, rvId: String, onComplete: (Boolean) -> Unit = { _ -> }) {
-//        viewModelScope.launch {
-//            try {
-//                val success = rvApiService.addToFavorites(userId, rvId)
-//                if (success) {
-//                    _favorites[rvId] = true
-//                    updateLocalFavoriteStatus(rvId)
-//                }
-//                onComplete(success)
-//            } catch (e: Exception) {
-//                onComplete(false)
-//            }
-//        }
-//    }
-//
-//    fun removeFromFavorites(userId: String, rvId: String, onComplete: (Boolean) -> Unit = { _ -> }) {
-//        viewModelScope.launch {
-//            try {
-//                val success = rvApiService.removeFromFavorites(userId, rvId)
-//                if (success) {
-//                    _favorites[rvId] = false
-//                    updateLocalFavoriteStatus(rvId)
-//                }
-//                onComplete(success)
-//            } catch (e: Exception) {
-//                onComplete(false)
-//            }
-//        }
-//    }
+
 
     fun checkFavoriteStatus(userId: String, rvId: String, onComplete: (Boolean) -> Unit = { _ -> }) {
         viewModelScope.launch {
@@ -295,18 +222,46 @@ class RVViewModel : ViewModel() {
 
     private val rvInformation = RVInformation()  // Assuming RVInformation is the class with getAllFavorites
 
+
+//    private val _fetchedFavourites = MutableStateFlow<List<Favorite>>(emptyList())
+//    val fetchedFavourites: StateFlow<List<Favorite>> = _fetchedFavourites
+
+
+
     fun loadFavorites(userId: String) {
-        // Launch a coroutine in the viewModelScope to call the suspend function
         viewModelScope.launch {
             try {
-                val fetchedFavorites = rvInformation.getAllFavorites(userId)
-                _fetchedFavourites.value = fetchedFavorites
+                val result = rvInformation.getAllFavorites(userId)
+                // Log the raw Firestore data for debugging
+                Log.d("ViewModel", "Raw Firestore data: $result")
+                _fetchedFavourites.value = result
             } catch (e: Exception) {
-                // Handle any errors here
-                Log.e("RVViewModel", "Error loading favorites", e)
+                if (e !is CancellationException) { // Handle non-cancellation exceptions
+                    Log.e("ViewModel", "Permanent error", e)
+                    _fetchedFavourites.value = emptyList() // Reset the list on error
+                }
             }
         }
     }
+
+//    fun loadFavorites(userId: String) {
+//        viewModelScope.launch {
+//            try {
+//                val result = rvInformation.getAllFavorites(userId)
+//                if (isActive) { // Check if coroutine is still active
+//                    _fetchedFavourites.value = result
+//                }
+//            } catch (e: Exception) {
+//                if (e !is CancellationException) { // Don't reset on normal cancellation
+//                    Log.e("ViewModel", "Permanent error", e)
+//                    _fetchedFavourites.value = emptyList()
+//                }
+//            }
+//        }
+//    }
+
+
+
 
 
 
@@ -423,6 +378,116 @@ class RVViewModel : ViewModel() {
             }
         }
     }
+
+
+
+//    private val rvNewList = (1..10).map { index ->
+//        RV(
+//            id = "rv${index.toString().padStart(3, '0')}",
+//            ownerId = "owner${index.toString().padStart(3, '0')}",
+//            name = when (index) {
+//                1 -> "Explorer 2025"
+//                2 -> "Cozy Cruiser"
+//                3 -> "Mountain Trekker"
+//                4 -> "Urban Nomad"
+//                5 -> "Desert Drifter"
+//                6 -> "Forest Voyager"
+//                7 -> "Sunset Seeker"
+//                8 -> "River Runner"
+//                9 -> "Skyline Roamer"
+//                else -> "Pacific Wanderer"
+//            },
+//            type = if (index % 2 == 0) RVType.Sales else RVType.Rental,
+//            description = "This is RV number $index with high-end features and adventure-ready design.",
+//            pricePerDay = 80.0 + (index * 10),
+//            imageUrl = "https://storage.cloud.google.com/rvnow-72045.firebasestorage.app/RVNow_Image/$index.png",
+//            place = when (index) {
+//                1 -> "New York, USA"
+//                2 -> "Austin, TX"
+//                3 -> "Denver, CO"
+//                4 -> "Los Angeles, CA"
+//                5 -> "Phoenix, AZ"
+//                6 -> "Portland, OR"
+//                7 -> "Salt Lake City, UT"
+//                8 -> "San Francisco, CA"
+//                9 -> "Chicago, IL"
+//                else -> "Miami, FL"
+//            },
+//            additionalImages = (1..10).map { i ->
+//                "https://storage.cloud.google.com/rvnow-72045.firebasestorage.app/RVNow_Image/${index}.$i.png"
+//            },
+//            insurance = mapOf("type" to "Comprehensive", "company" to "InsureCo $index"),
+//            driverLicenceRequired = if (index % 2 == 0) "C" else "B",
+//            kilometerLimitation = 200 + (index * 10),
+//            isForSale = (index % 2 == 0),
+//            isForRental = (index % 2 != 0),
+//            isPopular = (index % 3 == 0),
+//            status = "Available",
+//            createdAt = Timestamp.now(),
+//            bookedDates = listOf(
+//                hashMapOf(
+//                    "start" to Timestamp.now(),
+//                    "end" to Timestamp.now()
+//                )
+//            ),
+//            price = if (index % 2 == 0) 18000.0 + (index * 500) else 80.0 + (index * 10)
+//        )
+//    }
+    private val rvNewList = (1..4).map { index ->  // Changed range from 1..10 to 1..4
+        RV(
+            id = "rv${index.toString().padStart(3, '0')}",
+            ownerId = "owner${index.toString().padStart(3, '0')}",
+            name = when (index) {
+                1 -> "Explorer 2025"
+                2 -> "Cozy Cruiser"
+                3 -> "Mountain Trekker"
+                4 -> "Urban Nomad"
+                else -> "Pacific Wanderer"  // This is no longer needed
+            },
+            type = if (index % 2 == 0) RVType.Sales else RVType.Rental,
+            description = "This is RV number $index with high-end features and adventure-ready design.",
+            pricePerDay = 80.0 + (index * 10),
+            imageUrl = "https://storage.cloud.google.com/rvnow-72045.firebasestorage.app/RVNow_Image/$index.png",
+            place = when (index) {
+                1 -> "New York, USA"
+                2 -> "Austin, TX"
+                3 -> "Denver, CO"
+                4 -> "Los Angeles, CA"
+                else -> "Miami, FL"  // This is also no longer needed
+            },
+            additionalImages = (1..10).map { i ->
+                "https://storage.cloud.google.com/rvnow-72045.firebasestorage.app/RVNow_Image/${index}.$i.png"
+            },
+            insurance = mapOf("type" to "Comprehensive", "company" to "InsureCo $index"),
+            driverLicenceRequired = if (index % 2 == 0) "C" else "B",
+            kilometerLimitation = 200 + (index * 10),
+            isForSale = (index % 2 == 0),
+            isForRental = (index % 2 != 0),
+            isPopular = (index % 3 == 0),
+            status = "Available",
+            createdAt = Timestamp.now(),
+            bookedDates = listOf(
+                hashMapOf(
+                    "start" to Timestamp.now(),
+                    "end" to Timestamp.now()
+                )
+            ),
+            price = if (index % 2 == 0) 18000.0 + (index * 500) else 80.0 + (index * 10)
+        )
+    }
+
+
+//    fun addRVDataToFirestore() {
+//        viewModelScope.launch {
+//            try {
+//                rvApiService.addRVs(rvList=rvNewList) // Pass the list of RV objects to the API
+//            } catch (e: Exception) {
+//                Log.e("Firestore", "Failed to add RVs", e)
+//            }
+//        }
+//    }
+
+
 }
 
 

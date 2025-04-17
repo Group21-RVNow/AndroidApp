@@ -6,15 +6,21 @@ import com.google.firebase.firestore.PropertyName
 
 
 data class Favorite(
+    @get:PropertyName("rvId")
     val rvId: String = "",
+
+    @get:PropertyName("name")
     val name: String = "",
+
+    @get:PropertyName("imageUrl")
     val imageUrl: String = "",
 
-    @get:PropertyName("isForRental") @set:PropertyName("isForRental")
+    @get:PropertyName("isForRental")
     var isForRental: Boolean = false,
 
-    @get:PropertyName("isForSale") @set:PropertyName("isForSale")
+    @get:PropertyName("isForSale")
     var isForSale: Boolean = false,
 
+    @get:PropertyName("createdat")
     val createdat: Timestamp = Timestamp.now()
 )

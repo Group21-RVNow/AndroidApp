@@ -35,7 +35,7 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    private fun fetchUserData(uid: String) {
+    fun fetchUserData(uid: String) {
         firestore.collection("users")
             .document(uid)
             .get()
@@ -54,8 +54,8 @@ class AuthViewModel : ViewModel() {
     // Sign-out function
     fun logout() {
         FirebaseAuth.getInstance().signOut()
-        _isLoggedIn.value = false // Update the login status
-        _userInfo.value = null // Clear user info on logout
+        _isLoggedIn.value = false
+        _userInfo.value = null
     }
 }
 //

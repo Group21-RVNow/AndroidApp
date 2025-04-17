@@ -38,6 +38,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -57,6 +58,33 @@ import com.example.rvnow.viewmodels.RVViewModel
 import java.util.*
 import java.time.temporal.ChronoUnit
 
+@Composable
+private fun CustomDivider() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(24.dp)
+            .padding(vertical = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .height(1.dp)
+                .fillMaxWidth(0.9f)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                            Color.Transparent
+                        )
+                    )
+                )
+        )
+    }
+}
 
 @Composable
 fun StarRatingBar(
@@ -429,6 +457,7 @@ fun RVDetailScreen(
 
                                     // Product Description
                                     Spacer(modifier = Modifier.height(16.dp))
+                                    CustomDivider()
                                     Text(
                                         text = "Vehicle Information:",
                                         fontSize = 28.sp,
@@ -523,6 +552,9 @@ fun RVDetailScreen(
 
                                     Spacer(modifier = Modifier.height(16.dp))
 
+
+
+                                    CustomDivider()
                                     Spacer(modifier = Modifier.height(16.dp))
 //                        leave a rating:
                                     // Comment Input
@@ -681,7 +713,8 @@ fun RVDetailScreen(
                                     Log.d("ComputedQuantity", "Computed Quantity: $computedQuantity")
 
 
-
+                                    CustomDivider()
+                                    Spacer(modifier = Modifier.height(15.dp))
                                     Column(
 //                            verticalAlignment = Alignment.CenterVertically,
                                         modifier = Modifier.fillMaxWidth(),
@@ -841,6 +874,8 @@ fun RVDetailScreen(
 
 
                                     // Comment Input
+                                    Spacer(modifier = Modifier.height(15.dp))
+                                    CustomDivider()
                                     Spacer(modifier = Modifier.height(15.dp))
                                     Text(
                                         text = "Leave a Comment:",

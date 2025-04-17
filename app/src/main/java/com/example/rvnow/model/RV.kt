@@ -17,10 +17,10 @@ data class RV(
     val insurance: Map<String, String> = emptyMap(),
     val driverLicenceRequired: String? = null,
     val kilometerLimitation: Int? = null,
-    @get:PropertyName("isForRental") @set:PropertyName("isForRental")
-    var isForRental: Boolean = false,
+    @get:PropertyName("isForRental") var isForRental: Boolean = false,
 
     @get:PropertyName("isPopular") val isPopular: Boolean = true,
+
     val status: String = "",
     val createdAt: Timestamp = Timestamp.now(),
     val bookedDates: List<Map<String, Timestamp>> = listOf(),
@@ -28,7 +28,7 @@ data class RV(
 
     var isFavorite: Boolean = false,
 
-    @get:PropertyName("price") @set:PropertyName("price")
+    @get:PropertyName("price")
     var price: Double = 0.0
 )
 

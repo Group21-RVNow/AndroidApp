@@ -39,7 +39,7 @@ import com.example.rvnow.model.Favorite
 import com.example.rvnow.model.User
 
 @Composable
-fun ProfileScreen(
+fun PS(
     navController: NavController,
     authViewModel: AuthViewModel,
     rvViewModel: RVViewModel = viewModel()
@@ -52,6 +52,9 @@ fun ProfileScreen(
     val fullName by authViewModel.fullName.observeAsState()
     val email = userInfo?.email ?: "No Email"  // Fallback value
     val profilePictureUrl = userInfo?.profilePictureUrl ?: ""  // Fallback to empty string
+
+//    val fetchedFavourites by rvViewModel.fetchedFavourites.collectAsState()
+//    val favorites = fetchedFavourites ?: emptyList()
 
     val favorites: List<Favorite> by rvViewModel.fetchedFavourites.collectAsState()
 
@@ -124,11 +127,11 @@ fun ProfileScreen(
 
             // 租赁收藏
 //
-            FavoriteSection(
-                title = "Rental Favorites",
-                favorites = favorites.filter{!it.isForSale},
-                navController = navController
-            )
+                FavoriteSection(
+                    title = "Rental Favorites",
+                    favorites = favorites.filter{!it.isForSale},
+                    navController = navController
+                )
 
 
             CustomDivider()
