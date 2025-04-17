@@ -67,6 +67,8 @@ import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 //import androidx.compose.ui.Alignment
+
+
 @Composable
 fun RentalScreen(
     rvViewModel: RVViewModel = viewModel(),
@@ -230,16 +232,18 @@ fun RentalScreen(
             modifier = Modifier
                 .fillMaxWidth().padding(10.dp)
 //                .width(100.dp) .align(Alignment.Center)
-                .clickable { startDatePickerDialog.show() } // Apply clickable to the Box
+//                .clickable { startDatePickerDialog.show() } // Apply clickable to the Box
         ) {
             Button(
                 onClick = {
                     isSearchPerformed = true
-                    drivingType = ""
-                    startDate = ""
-                    endDate = ""
-                    place = ""},
-                modifier = Modifier.fillMaxWidth()
+//                    drivingType = ""
+//                    startDate = ""
+//                    endDate = ""
+//                    place = ""
+                          },
+                modifier = Modifier.fillMaxWidth(),
+
             ) {
                 Text("Search")
             }
@@ -249,65 +253,41 @@ fun RentalScreen(
 
 
 
-
-
+        val filteredRVs = rvList.filter { it.isForRental == true}
         val filteredRVs1 = if (isSearchPerformed) {
-            // Parse the user input dates using the same format as the DatePicker output.
             val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            // Ensure that parsed user dates are in UTC (Firebase stores in UTC)
-            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
 
-            val userSearchStart: Date? = if (startDate.isNotEmpty()) dateFormat.parse(startDate) else null
-            val userSearchEnd: Date? = if (endDate.isNotEmpty()) dateFormat.parse(endDate) else null
+            val userSearchStart = try {
+                dateFormat.parse(startDate)
+            } catch (e: Exception) { null }
 
-            // Define a gap in milliseconds (2 days = 2 * 24 * 60 * 60 * 1000)
-            val gapMillis = 2L * 24 * 60 * 60 * 1000
+            val userSearchEnd = try {
+                dateFormat.parse(endDate)
+            } catch (e: Exception) { null }
 
-            rvList.filter { rv ->
-                val dateValid = if (userSearchStart != null && userSearchEnd != null && rv.bookedDates.isNotEmpty()) {
-                    val overlaps = rv.bookedDates.none { bookedDate ->
-                        // Convert Firebase timestamp (bookedDate["startDate"]) to Date in UTC
-                        val bookedStart = (bookedDate["startDate"] as? Timestamp)?.toDate() // Firebase stores in UTC
-                        val bookedEnd = (bookedDate["endDate"] as? Timestamp)?.toDate() // Firebase stores in UTC
+            filteredRVs.filter { rv ->
+                // FIX 3: Simplified date check
+                val dateValid = if (userSearchStart != null && userSearchEnd != null) {
+                    rv.bookedDates.none { bookedDate ->
+                        val bookedStart = (bookedDate["startDate"] as? Timestamp)?.toDate()
+                        val bookedEnd = (bookedDate["endDate"] as? Timestamp)?.toDate()
 
-                        if (bookedStart != null && bookedEnd != null) {
-                            // Convert bookedStart and bookedEnd from UTC to UTC+2 (Finnish time)
-                            val timeZone = TimeZone.getTimeZone("GMT+02:00")
-                            val calendarStart = Calendar.getInstance(timeZone).apply { time = bookedStart }
-                            val calendarEnd = Calendar.getInstance(timeZone).apply { time = bookedEnd }
-
-                            // Now you have the start and end dates in Finnish time (UTC+2)
-                            val finnishStart = calendarStart.time
-                            val finnishEnd = calendarEnd.time
-
-                            // Check if the user search dates overlap with booked dates
-                            val condition = userSearchEnd.time > finnishStart.time - gapMillis &&
-                                    userSearchStart.time < finnishEnd.time + gapMillis
-
-                            Log.d("FilterCheck", "Checking RV: ${rv.id}, Start: $finnishStart, End: $finnishEnd, Overlaps: $condition")
-
-                            condition // should return a Boolean value here
-                        } else {
-                            false
-                        }
+                        bookedStart != null && bookedEnd != null &&
+                                !(userSearchEnd.before(bookedStart) || userSearchStart.after(bookedEnd))
                     }
-                    Log.d("FilterCheck", "RV: ${rv.id} is valid: $overlaps")
+                } else true
 
-                    overlaps // This should return a Boolean here
+                val drivingTypeValid = drivingType.isBlank() ||
+                        rv.driverLicenceRequired.equals(drivingType, true)
 
-                } else {
-                    true
-                }
+                val placeValid = place.isBlank() ||
+                        rv.place.equals(place.trim(), true)
 
-                // Ensure that `dateValid` is a Boolean (condition should be true or false)
-                dateValid
-
+                dateValid && drivingTypeValid && placeValid
             }
         } else {
-            // If no search is performed, display all RVs for sale.
-            rvList.filter { !it.isForSale}
+            filteredRVs
         }
-
 
 
 
@@ -331,6 +311,69 @@ fun RentalScreen(
         }
     }
 }
+
+//        val filteredRVs1 = if (isSearchPerformed) {
+//            // Parse the user input dates using the same format as the DatePicker output.
+//            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+//            // Ensure that parsed user dates are in UTC (Firebase stores in UTC)
+//            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+//
+//            val userSearchStart: Date? = if (startDate.isNotEmpty()) dateFormat.parse(startDate) else null
+//            val userSearchEnd: Date? = if (endDate.isNotEmpty()) dateFormat.parse(endDate) else null
+//
+//            // Define a gap in milliseconds (2 days = 2 * 24 * 60 * 60 * 1000)
+//            val gapMillis = 2L * 24 * 60 * 60 * 1000
+//
+//            filteredRVs.filter { rv ->
+//                val dateValid = if (userSearchStart != null && userSearchEnd != null && rv.bookedDates.isNotEmpty()) {
+//                    val overlaps = rv.bookedDates.none { bookedDate ->
+//                        // Convert Firebase timestamp (bookedDate["startDate"]) to Date in UTC
+//                        val bookedStart = (bookedDate["startDate"] as? Timestamp)?.toDate() // Firebase stores in UTC
+//                        val bookedEnd = (bookedDate["endDate"] as? Timestamp)?.toDate() // Firebase stores in UTC
+//
+//                        if (bookedStart != null && bookedEnd != null) {
+//                            // Convert bookedStart and bookedEnd from UTC to UTC+2 (Finnish time)
+//                            val timeZone = TimeZone.getTimeZone("GMT+02:00")
+//                            val calendarStart = Calendar.getInstance(timeZone).apply { time = bookedStart }
+//                            val calendarEnd = Calendar.getInstance(timeZone).apply { time = bookedEnd }
+//
+//                            // Now you have the start and end dates in Finnish time (UTC+2)
+//                            val finnishStart = calendarStart.time
+//                            val finnishEnd = calendarEnd.time
+//
+//                            // Check if the user search dates overlap with booked dates
+//                            val condition = userSearchEnd.time > finnishStart.time - gapMillis &&
+//                                    userSearchStart.time < finnishEnd.time + gapMillis
+//
+//                            Log.d("FilterCheck", "Checking RV: ${rv.id}, Start: $finnishStart, End: $finnishEnd, Overlaps: $condition")
+//
+//                            condition // should return a Boolean value here
+//                        } else {
+//                            false
+//                        }
+//                    }
+//                    Log.d("FilterCheck", "RV: ${rv.id} is valid: $overlaps")
+//
+//                    overlaps // This should return a Boolean here
+//
+//                } else {
+//                    true
+//                }
+//
+//                // Additional filters here
+//                val drivingTypeValid = drivingType.isBlank() || (rv.driverLicenceRequired?.contains(drivingType, ignoreCase = true) == true)
+//
+//                val placeValid = place.isBlank() || rv.place.trim().equals(place.trim(), ignoreCase = true)
+//
+//
+//                dateValid && drivingTypeValid && placeValid
+//
+//            }
+//        } else {
+//            // If no search is performed, display all RVs for sale.
+//            rvList.filter { !it.isForSale}
+//        }
+
 
 @Composable
 fun StarRatingBar3(
