@@ -166,7 +166,7 @@ fun HomeScreen(
 
 ) {
     val rvList by rvViewModel.rvs.collectAsState()
-    val heroImage = rememberAsyncImagePainter("file:///android_asset/images/brighter_image_2.png")
+    val heroImage = rememberAsyncImagePainter("file:///android_asset/images/brighter_image_3.png")
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val isSmallScreen = screenWidth < 360.dp

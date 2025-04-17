@@ -1,34 +1,73 @@
 package com.example.rvnow.screens
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.rvnow.model.RVDestination
 import com.example.rvnow.model.RVTravelGuide
 import com.example.rvnow.viewmodels.GoRVingViewModel
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextFieldDefaults
+import kotlinx.coroutines.launch
 
-// 添加OptIn注解以处理实验性API警告
+// Define spacing constants consistent with HomeScreen
+private val SECTION_SPACING = 32.dp
+private val SECTION_SPACING_SMALL = 20.dp
+private val HORIZONTAL_PADDING = 16.dp
+private val CARD_CORNER_RADIUS = 12.dp
+private val CARD_CONTENT_PADDING = 12.dp
+
+val primaryColor = Color(0xFFE27D5F)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GoRVingScreen(navController: NavController) {
-    val viewModel = viewModel<GoRVingViewModel>()
+fun GoRVingScreen(
+    navController: NavController,
+    viewModel: GoRVingViewModel = viewModel()
+) {
+    // Define colors consistent with HomeScreen
+    val primaryColor = Color(0xFFE27D5F)  // Terracotta orange
+    val secondaryColor = Color(0xFF5D8AA8)  // Lake blue
+    val tertiaryColor = Color(0xFF6B8E23)  // Moss green
+    val neutralColor = Color(0xFFA78A7F)   // Light camel - used for featured destination background
+
+    var searchQuery by remember { mutableStateOf("") }
+    val destinations by viewModel.destinations.collectAsState()
+    val featuredDestinations by viewModel.featuredDestinations.collectAsState()
+    val travelGuides by viewModel.travelGuides.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+    // 添加协程作用域用于处理搜索
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.loadDestinations()
@@ -36,48 +75,37 @@ fun GoRVingScreen(navController: NavController) {
         viewModel.loadTravelGuides()
     }
 
-    val destinations by viewModel.destinations.collectAsState()
-    val featuredDestinations by viewModel.featuredDestinations.collectAsState()
-    val travelGuides by viewModel.travelGuides.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val error by viewModel.error.collectAsState()
-
-    var searchQuery by remember { mutableStateOf("") }
-
     Scaffold(
         topBar = {
-            Column {
-                TopAppBar(
-                    title = { Text("Go RVing") }
-                )
-
-                // 将搜索框移到TopAppBar下方，而不是放在actions中
-                TextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
+            Column(
+                modifier = Modifier.background(Color.White)
+            ) {
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    placeholder = { Text("Search destinations...") },
-                    trailingIcon = {
-                        IconButton(onClick = {
-                            if (searchQuery.isNotEmpty()) {
-                                viewModel.search(searchQuery)
-                                navController.navigate("search_results")
-                            }
-                        }) {
-                            Icon(Icons.Default.Search, contentDescription = "Search")
-                        }
-                    },
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                        unfocusedIndicatorColor = Color.Gray
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                )
+                        .background(primaryColor.copy(alpha = 0.2f))
+                        .padding(vertical = 12.dp, horizontal = HORIZONTAL_PADDING)
+                ) {
+                    Column {
+                        Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
+
+                        Text(
+                            "Go RVing",
+                            fontFamily = FontFamily.Serif,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 24.sp,
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.height(CARD_CORNER_RADIUS))
+                        Text(
+                            "Discover amazing RV destinations",
+                            fontFamily = FontFamily.Serif,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.Black
+                        )
+                    }
+                }
             }
         }
     ) { paddingValues ->
@@ -86,85 +114,200 @@ fun GoRVingScreen(navController: NavController) {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = primaryColor)
             }
         } else if (error != null) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Error: $error")
+                Text(
+                    "Error: $error",
+                    color = Color.Red,
+                    fontFamily = FontFamily.Default,
+                    fontSize = 16.sp
+                )
             }
         } else {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .padding(bottom = SECTION_SPACING),
+                verticalArrangement = Arrangement.spacedBy(SECTION_SPACING)
             ) {
-                // 特色目的地
+                // Search bar
                 item {
-                    Text(
-                        text = "Featured Destinations",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Spacer(modifier = Modifier.height(SECTION_SPACING))
 
-                    LazyRow(
-                        contentPadding = PaddingValues(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(featuredDestinations) { destination ->
-                            FeaturedDestinationItem(
-                                destination = destination,
-                                onClick = {
-                                    navController.navigate("destination_details/${destination.id}")
+                    var isSearching by remember { mutableStateOf(false) }
+
+                    if (isSearching) {
+                        LinearProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = HORIZONTAL_PADDING),
+                            color = primaryColor
+                        )
+                    }
+
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = HORIZONTAL_PADDING),
+                        placeholder = { Text("Search destinations", color = Color.Gray) },
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                if (searchQuery.isNotEmpty()) {
+                                    isSearching = true
+                                    coroutineScope.launch {
+                                        viewModel.clearSearch()
+                                        viewModel.search(searchQuery).collect { results ->
+                                            isSearching = false
+                                            if (results.isNotEmpty()) {
+                                                navController.navigate("search_results")
+                                            }
+                                        }
+                                    }
                                 }
-                            )
+                            }) {
+                                Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.Black)
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                if (searchQuery.isNotEmpty()) {
+                                    isSearching = true
+                                    coroutineScope.launch {
+                                        viewModel.clearSearch()
+                                        viewModel.search(searchQuery).collect { results ->
+                                            isSearching = false
+                                            if (results.isNotEmpty()) {
+                                                navController.navigate("search_results")
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ),
+                        singleLine = true,
+                        shape = RoundedCornerShape(CARD_CORNER_RADIUS),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = primaryColor,
+                            cursorColor = primaryColor,
+                        )
+                    )
+                }
+
+                // Featured destinations
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp)
+                    ) {
+                        Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
+                        Text(
+                            text = "Featured Destinations",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Default,
+                            color = Color.Black,
+                            modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
+                        )
+
+                        Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
+
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = HORIZONTAL_PADDING),
+                            horizontalArrangement = Arrangement.spacedBy(SECTION_SPACING_SMALL))
+                        {
+                            items(featuredDestinations) { destination ->
+                                FeaturedDestinationCard(
+                                    destination = destination,
+                                    onClick = {
+                                        navController.navigate("destination_details/${destination.id}")
+                                    },
+                                    neutralColor = neutralColor
+                                )
+                            }
                         }
                     }
                 }
 
-                // 按国家浏览
+
+
+                // Browse by country
                 item {
-                    Text(
-                        text = "Browse by Country",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Column {
+                        Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
 
-                    val countries = destinations.map { it.country }.distinct()
+                        Text(
+                            text = "Browse by Country",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Default,
+                            color = Color.Black,
+                            modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
+                        )
 
-                    LazyRow(
-                        contentPadding = PaddingValues(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(countries) { country ->
-                            CountryItem(
-                                country = country,
-                                onClick = {
-                                    navController.navigate("country_destinations/$country")
-                                }
-                            )
+                        Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
+
+                        // Get unique countries
+                        val countries = destinations.map { it.country }.distinct()
+
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = HORIZONTAL_PADDING),
+                            horizontalArrangement = Arrangement.spacedBy(SECTION_SPACING))
+                        {
+                            items(countries) { country ->
+                                CountryCard(
+                                    country = country,
+                                    onClick = {
+                                        navController.navigate("country_destinations/$country")
+                                    }
+                                )
+                            }
                         }
                     }
                 }
 
-                // 旅游攻略
+                // Travel guides
                 item {
-                    Text(
-                        text = "Travel Guides",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp)
+                    ) {
+                        Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
+                        Text(
+                            text = "Travel Guides",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Default,
+                            color = Color.Black,
+                            modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
+                        )
 
-                items(travelGuides) { guide ->
-                    TravelGuideItem(
-                        travelGuide = guide,
-                        onClick = {
-                            navController.navigate("travel_guide_details/${guide.id}")
+                        Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
+
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = HORIZONTAL_PADDING),
+                            horizontalArrangement = Arrangement.spacedBy(SECTION_SPACING_SMALL)
+                        ) {
+                            items(travelGuides) { guide ->
+                                TravelGuideCard(
+                                    travelGuide = guide,
+                                    onClick = {
+                                        navController.navigate("travel_guide_details/${guide.id}")
+                                    }
+                                )
+                            }
                         }
-                    )
+                    }
                 }
             }
         }
@@ -172,14 +315,20 @@ fun GoRVingScreen(navController: NavController) {
 }
 
 @Composable
-fun FeaturedDestinationItem(destination: RVDestination, onClick: () -> Unit) {
+fun FeaturedDestinationCard(
+    destination: RVDestination,
+    onClick: () -> Unit,
+    neutralColor: Color,
+    modifier: Modifier = Modifier
+) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .width(280.dp)
             .height(200.dp)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RoundedCornerShape(CARD_CORNER_RADIUS),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Box {
             AsyncImage(
@@ -191,95 +340,182 @@ fun FeaturedDestinationItem(destination: RVDestination, onClick: () -> Unit) {
 
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.BottomStart
-            ) {
-                Column {
-                    Text(
-                        text = destination.name,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = Color.White
-                    )
+                    .fillMaxWidth()
+                    .height(80.dp)
+                    .align(Alignment.BottomCenter)
+//                    .background(
+//                        neutralColor.copy(alpha = 0.5f)
+            )
 
-                    Text(
-                        text = destination.location,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White
-                    )
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(CARD_CONTENT_PADDING)
+            ) {
+                Text(
+                    text = destination.name,
+                    color = Color.Black,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Default
+                )
+
+                Text(
+                    text = "${destination.location}, ${destination.country}",
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily.Default
+
+                )
+            }
+
+            // 添加评分标签
+            if (destination.rating > 0) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .background(
+                            color = primaryColor,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Star,
+                            contentDescription = "Rating",
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "${destination.rating}",
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+
 @Composable
-fun CountryItem(country: String, onClick: () -> Unit) {
+fun CountryCard(
+    country: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // 硬编码国旗图片URL（使用flagcdn高质量图片）
+    val flagImageUrl = when (country) {
+        "Sweden" -> "https://flagcdn.com/w640/se.jpg"
+        "Norway" -> "https://flagcdn.com/w640/no.jpg"
+        "Finland" -> "https://flagcdn.com/w640/fi.jpg"
+        "Denmark" -> "https://flagcdn.com/w640/dk.jpg"
+        "Iceland" -> "https://flagcdn.com/w640/is.jpg"
+        "USA" -> "https://flagcdn.com/w640/us.jpg"
+        "Canada" -> "https://flagcdn.com/w640/ca.jpg"
+        "Germany" -> "https://flagcdn.com/w640/de.jpg"
+        "France" -> "https://flagcdn.com/w640/fr.jpg"
+        "Spain" -> "https://flagcdn.com/w640/es.jpg"
+        else -> "https://flagcdn.com/w640/generic.png"
+    }
+
     Card(
-        modifier = Modifier
+        modifier = modifier
             .width(120.dp)
             .height(80.dp)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(CARD_CORNER_RADIUS),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
+            AsyncImage(
+                model = flagImageUrl,
+                contentDescription = country,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            // 半透明覆盖层
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+            )
+
             Text(
                 text = country,
-                style = MaterialTheme.typography.titleLarge
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Default,
+                textAlign = TextAlign.Center
             )
         }
     }
 }
 
 @Composable
-fun TravelGuideItem(travelGuide: RVTravelGuide, onClick: () -> Unit) {
+fun TravelGuideCard(
+    travelGuide: RVTravelGuide,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+        modifier = modifier
+            .width(280.dp)
+            .height(180.dp)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(CARD_CORNER_RADIUS),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            AsyncImage(
-                model = travelGuide.imageUrl,
-                contentDescription = travelGuide.title,
+        Column {
+            Box(
                 modifier = Modifier
-                    .width(120.dp)
-                    .height(100.dp),
-                contentScale = ContentScale.Crop
-            )
+                    .fillMaxWidth()
+                    .height(120.dp)
+            ) {
+                AsyncImage(
+                    model = travelGuide.imageUrl,
+                    contentDescription = travelGuide.title,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
 
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(CARD_CONTENT_PADDING)
             ) {
                 Text(
                     text = travelGuide.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Default,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
                     text = travelGuide.summary,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Published: ${travelGuide.date}",
-                    style = MaterialTheme.typography.bodySmall
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily.Default,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.Gray
                 )
             }
         }
