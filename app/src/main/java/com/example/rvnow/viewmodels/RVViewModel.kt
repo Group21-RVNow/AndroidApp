@@ -11,48 +11,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.snapshots.SnapshotStateMap
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.rvnow.model.Comment
 import kotlinx.coroutines.Job
 
 import com.example.rvnow.model.CartItem
 import com.example.rvnow.model.Favorite
 import com.example.rvnow.model.Rating
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.Dispatchers
-import androidx.lifecycle.viewModelScope
-import androidx.compose.runtime.Composable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-//import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.Modifier
-//import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.runtime.State
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+
 import com.example.rvnow.model.RVType
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.CancellationException
-import javax.inject.Inject
 
 class RVViewModel : ViewModel() {
     private val rvApiService = RVInformation()
-
 
 //    private val rvApiService = RVInformation()
     private val _rvs = MutableStateFlow<List<RV>>(emptyList())
@@ -413,7 +384,8 @@ class RVViewModel : ViewModel() {
 
 
 
-//    private val rvNewList = (1..10).map { index ->
+
+    //    private val rvNewList = (1..10).map { index ->
 //        RV(
 //            id = "rv${index.toString().padStart(3, '0')}",
 //            ownerId = "owner${index.toString().padStart(3, '0')}",

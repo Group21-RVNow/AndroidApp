@@ -32,14 +32,17 @@ import androidx.navigation.NavController
 import com.example.rvnow.viewmodels.AuthViewModel
 import com.example.rvnow.viewmodels.RVViewModel
 import androidx.compose.foundation.clickable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Observer
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.example.rvnow.model.Favorite
 import com.example.rvnow.model.User
-
+//import com.example.rvnow.viewmodels.RVViewModel
 @Composable
-fun PS(
+fun ProfileScreen1(
     navController: NavController,
     authViewModel: AuthViewModel,
     rvViewModel: RVViewModel = viewModel()
@@ -49,14 +52,7 @@ fun PS(
     val rvList by rvViewModel.rvs.collectAsState()
     val userInfo by authViewModel.userInfo.observeAsState()
     val userId = userInfo?.id
-    val fullName by authViewModel.fullName.observeAsState()
-    val email = userInfo?.email ?: "No Email"  // Fallback value
-    val profilePictureUrl = userInfo?.profilePictureUrl ?: ""  // Fallback to empty string
-
-//    val fetchedFavourites by rvViewModel.fetchedFavourites.collectAsState()
-//    val favorites = fetchedFavourites ?: emptyList()
-
-    val favorites: List<Favorite> by rvViewModel.fetchedFavourites.collectAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(userId) {
         if (userId != null) {
@@ -65,6 +61,14 @@ fun PS(
             rvViewModel.loadFavorites(userId)
         }
     }
+
+    val fullName by authViewModel.fullName.observeAsState()
+    val email = userInfo?.email ?: "No Email"  // Fallback value
+    val profilePictureUrl = userInfo?.profilePictureUrl ?: ""  // Fallback to empty string
+
+
+    val favorites: List<Favorite> by rvViewModel.fetchedFavourites.collectAsState()
+
 
 
     // Debug logging
@@ -127,11 +131,15 @@ fun PS(
 
             // 租赁收藏
 //
-                FavoriteSection(
-                    title = "Rental Favorites",
-                    favorites = favorites.filter{!it.isForSale},
-                    navController = navController
-                )
+            FavoriteSection(
+
+                title = "Rental Favorites",
+                favorites = favorites.filter{
+
+                    !it.isForSale
+                },
+                navController = navController
+            )
 
 
             CustomDivider()
@@ -240,13 +248,18 @@ private fun FavoriteSection(
         }
 
         Spacer(modifier = Modifier.height(12.dp))
+//        LazyRow {
+//            items(favorites, key = { it.rvId }) { favorite ->
+//                FavoriteRVCard(favorite = favorite, navController = navController)
+//            }
+//        }
 
         // 横向滚动列表
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(favorites) {
+            items(favorites,key = { it.rvId }) {
                     rv ->
                 FavoriteRVCard(
                     favorite = rv,
@@ -260,7 +273,7 @@ private fun FavoriteSection(
 
 
 @Composable
-private fun FavoriteRVCard(
+fun FavoriteRVCard(
     favorite: Favorite,
     navController: NavController,
 ) {
