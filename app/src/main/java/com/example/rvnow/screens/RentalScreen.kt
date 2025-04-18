@@ -66,7 +66,6 @@ import com.example.rvnow.viewmodels.RVViewModel
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
-//import androidx.compose.ui.Alignment
 
 
 @Composable
@@ -77,10 +76,10 @@ fun RentalScreen(
     val rvViewModel: RVViewModel = viewModel()
     val authViewModel: AuthViewModel = viewModel()
 
-    var drivingType by remember { mutableStateOf("") }
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
-    var place by remember { mutableStateOf("") }
+
+    var searchWords by remember { mutableStateOf("") }
     val context = LocalContext.current
     val rvList by rvViewModel.rvs.collectAsState()
     val calendar = Calendar.getInstance()
@@ -108,6 +107,22 @@ fun RentalScreen(
         calendar.get(Calendar.DAY_OF_MONTH)
     )
     val image1 = rememberAsyncImagePainter("file:///android_asset/images/11.png")
+
+    fun RV.matchesSearch(query: String): Boolean {
+        val q = query.trim().lowercase()
+        if (q.isBlank()) return true
+
+        val haystack = listOfNotNull(
+            name?.lowercase(),
+            description?.lowercase(),
+            place?.lowercase(),
+            driverLicenceRequired?.lowercase(),
+            status?.lowercase(),
+            type.name.lowercase()
+        ).joinToString(" ")
+
+        return haystack.contains(q)
+    }
 
     Column() {
 
@@ -151,8 +166,12 @@ fun RentalScreen(
             ) {
                 OutlinedTextField(
                     value = startDate,
-                    onValueChange = { newValue ->
-                        startDate = newValue},
+//                    onValueChange = { newValue ->
+//                        startDate = newValue},
+                    onValueChange = {
+                         searchWords = it
+                         isSearchPerformed = false      // ← stop filtering while typing
+                         },
                     readOnly = true,  // Prevent manual input
                     label = { Text("Start Date") },
                     modifier = Modifier
@@ -173,19 +192,7 @@ fun RentalScreen(
                     .weight(1f)
                     .clickable { endDatePickerDialog.show() } // Open Date Picker
             )
-//            // End Date Field
-//            OutlinedTextField(
-//                value = endDate,
-//                onValueChange = { },
-//                readOnly = true,  // Prevent typing
-//                label = { Text("End Date") },
-//                modifier = Modifier
-//                    .weight(1f)
-////                    .background(color = Color.Black)
-//                    .clickable { endDatePickerDialog.show() },
-////                textStyle = TextStyle(color = Color.B)
-//                // Open Date Picker
-//            )
+
         }
 
 
@@ -199,30 +206,15 @@ fun RentalScreen(
                     .weight(1f)
             ) {
                 OutlinedTextField(
-                    value = drivingType,
-                    onValueChange = { newValue ->
-                        drivingType = newValue},
+
+                    value = searchWords,
+                    onValueChange = { searchWords = it  },
                     label = { Text("Driving Type") },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(fontSize = 20.sp)
                 )
             }
 
-            Spacer(modifier = Modifier.width(20.dp))
-
-            Box(
-                modifier = Modifier.weight(1f)
-            ) {
-                OutlinedTextField(
-                    value = place,
-                    onValueChange = {
-                        newValue -> place = newValue },
-                    label = { Text("Place") },
-//                    readOnly = true, // Prevent manual input
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = TextStyle(fontSize = 20.sp)
-                )
-            }
         }
 
 
@@ -277,13 +269,9 @@ fun RentalScreen(
                     }
                 } else true
 
-                val drivingTypeValid = drivingType.isBlank() ||
-                        rv.driverLicenceRequired.equals(drivingType, true)
+                val matchesSearch = rv.matchesSearch(searchWords)
 
-                val placeValid = place.isBlank() ||
-                        rv.place.equals(place.trim(), true)
-
-                dateValid && drivingTypeValid && placeValid
+                dateValid && matchesSearch
             }
         } else {
             filteredRVs
@@ -312,67 +300,6 @@ fun RentalScreen(
     }
 }
 
-//        val filteredRVs1 = if (isSearchPerformed) {
-//            // Parse the user input dates using the same format as the DatePicker output.
-//            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-//            // Ensure that parsed user dates are in UTC (Firebase stores in UTC)
-//            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-//
-//            val userSearchStart: Date? = if (startDate.isNotEmpty()) dateFormat.parse(startDate) else null
-//            val userSearchEnd: Date? = if (endDate.isNotEmpty()) dateFormat.parse(endDate) else null
-//
-//            // Define a gap in milliseconds (2 days = 2 * 24 * 60 * 60 * 1000)
-//            val gapMillis = 2L * 24 * 60 * 60 * 1000
-//
-//            filteredRVs.filter { rv ->
-//                val dateValid = if (userSearchStart != null && userSearchEnd != null && rv.bookedDates.isNotEmpty()) {
-//                    val overlaps = rv.bookedDates.none { bookedDate ->
-//                        // Convert Firebase timestamp (bookedDate["startDate"]) to Date in UTC
-//                        val bookedStart = (bookedDate["startDate"] as? Timestamp)?.toDate() // Firebase stores in UTC
-//                        val bookedEnd = (bookedDate["endDate"] as? Timestamp)?.toDate() // Firebase stores in UTC
-//
-//                        if (bookedStart != null && bookedEnd != null) {
-//                            // Convert bookedStart and bookedEnd from UTC to UTC+2 (Finnish time)
-//                            val timeZone = TimeZone.getTimeZone("GMT+02:00")
-//                            val calendarStart = Calendar.getInstance(timeZone).apply { time = bookedStart }
-//                            val calendarEnd = Calendar.getInstance(timeZone).apply { time = bookedEnd }
-//
-//                            // Now you have the start and end dates in Finnish time (UTC+2)
-//                            val finnishStart = calendarStart.time
-//                            val finnishEnd = calendarEnd.time
-//
-//                            // Check if the user search dates overlap with booked dates
-//                            val condition = userSearchEnd.time > finnishStart.time - gapMillis &&
-//                                    userSearchStart.time < finnishEnd.time + gapMillis
-//
-//                            Log.d("FilterCheck", "Checking RV: ${rv.id}, Start: $finnishStart, End: $finnishEnd, Overlaps: $condition")
-//
-//                            condition // should return a Boolean value here
-//                        } else {
-//                            false
-//                        }
-//                    }
-//                    Log.d("FilterCheck", "RV: ${rv.id} is valid: $overlaps")
-//
-//                    overlaps // This should return a Boolean here
-//
-//                } else {
-//                    true
-//                }
-//
-//                // Additional filters here
-//                val drivingTypeValid = drivingType.isBlank() || (rv.driverLicenceRequired?.contains(drivingType, ignoreCase = true) == true)
-//
-//                val placeValid = place.isBlank() || rv.place.trim().equals(place.trim(), ignoreCase = true)
-//
-//
-//                dateValid && drivingTypeValid && placeValid
-//
-//            }
-//        } else {
-//            // If no search is performed, display all RVs for sale.
-//            rvList.filter { !it.isForSale}
-//        }
 
 
 @Composable
@@ -423,9 +350,9 @@ fun RVItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(20.dp)
             .clickable { navController.navigate("detail/${rv.id}?sourcePage=rental") },
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(15.dp)
     ) {
 
 

@@ -49,19 +49,21 @@ fun ProfileScreen(
     val rvList by rvViewModel.rvs.collectAsState()
     val userInfo by authViewModel.userInfo.observeAsState()
     val userId = userInfo?.id
+//    LaunchedEffect(userId) {
+//        if (userId != null) {
+//            Log.d("ProfileScreen", "Current user id: ${ userId }")
+////            authViewModel.fetchUserData(userId)
+//            rvViewModel.loadFavorites(userId)
+//        }
+//    }
+
     val fullName by authViewModel.fullName.observeAsState()
     val email = userInfo?.email ?: "No Email"  // Fallback value
     val profilePictureUrl = userInfo?.profilePictureUrl ?: ""  // Fallback to empty string
 
+
     val favorites: List<Favorite> by rvViewModel.fetchedFavourites.collectAsState()
 
-    LaunchedEffect(userId) {
-        if (userId != null) {
-            Log.d("ProfileScreen", "Current user id: ${ userId }")
-//            authViewModel.fetchUserData(userId)
-            rvViewModel.loadFavorites(userId)
-        }
-    }
 
 
     // Debug logging
@@ -125,8 +127,12 @@ fun ProfileScreen(
             // 租赁收藏
 //
             FavoriteSection(
+
                 title = "Rental Favorites",
-                favorites = favorites.filter{!it.isForSale},
+                favorites = favorites.filter{
+
+                    !it.isForSale
+                                            },
                 navController = navController
             )
 
@@ -237,13 +243,18 @@ private fun FavoriteSection(
         }
 
         Spacer(modifier = Modifier.height(12.dp))
+//        LazyRow {
+//            items(favorites, key = { it.rvId }) { favorite ->
+//                FavoriteRVCard(favorite = favorite, navController = navController)
+//            }
+//        }
 
         // 横向滚动列表
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(favorites) {
+            items(favorites,key = { it.rvId }) {
                     rv ->
                 FavoriteRVCard(
                     favorite = rv,

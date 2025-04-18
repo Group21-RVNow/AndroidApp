@@ -12,7 +12,7 @@ data class RV(
     val description: String = "",
     val pricePerDay: Double = 0.0,
     val imageUrl: String = "",
-    val place: String = "",
+    @get:PropertyName("place") val place: String = "",
     val additionalImages: List<String> = listOf(),
     val insurance: Map<String, String> = emptyMap(),
     val driverLicenceRequired: String? = null,

@@ -414,6 +414,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 //import androidx.compose.ui.Alignment
 
+
 @Composable
 fun SalesScreen(
     rvViewModel: RVViewModel = viewModel(),
@@ -422,10 +423,10 @@ fun SalesScreen(
     val rvViewModel: RVViewModel = viewModel()
     val authViewModel: AuthViewModel = viewModel()
 
-    var drivingType by remember { mutableStateOf("") }
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
-    var place by remember { mutableStateOf("") }
+
+    var searchWords by remember { mutableStateOf("") }
     val context = LocalContext.current
     val rvList by rvViewModel.rvs.collectAsState()
     val calendar = Calendar.getInstance()
@@ -453,6 +454,22 @@ fun SalesScreen(
         calendar.get(Calendar.DAY_OF_MONTH)
     )
     val image1 = rememberAsyncImagePainter("file:///android_asset/images/11.png")
+
+    fun RV.matchesSearch(query: String): Boolean {
+        val q = query.trim().lowercase()
+        if (q.isBlank()) return true
+
+        val haystack = listOfNotNull(
+            name?.lowercase(),
+            description?.lowercase(),
+            place?.lowercase(),
+            driverLicenceRequired?.lowercase(),
+            status?.lowercase(),
+            type.name.lowercase()
+        ).joinToString(" ")
+
+        return haystack.contains(q)
+    }
 
     Column() {
 
@@ -496,8 +513,12 @@ fun SalesScreen(
             ) {
                 OutlinedTextField(
                     value = startDate,
-                    onValueChange = { newValue ->
-                        startDate = newValue},
+//                    onValueChange = { newValue ->
+//                        startDate = newValue},
+                    onValueChange = {
+                        searchWords = it
+                        isSearchPerformed = false      // ← stop filtering while typing
+                    },
                     readOnly = true,  // Prevent manual input
                     label = { Text("Start Date") },
                     modifier = Modifier
@@ -518,19 +539,7 @@ fun SalesScreen(
                     .weight(1f)
                     .clickable { endDatePickerDialog.show() } // Open Date Picker
             )
-//            // End Date Field
-//            OutlinedTextField(
-//                value = endDate,
-//                onValueChange = { },
-//                readOnly = true,  // Prevent typing
-//                label = { Text("End Date") },
-//                modifier = Modifier
-//                    .weight(1f)
-////                    .background(color = Color.Black)
-//                    .clickable { endDatePickerDialog.show() },
-////                textStyle = TextStyle(color = Color.B)
-//                // Open Date Picker
-//            )
+
         }
 
 
@@ -544,30 +553,15 @@ fun SalesScreen(
                     .weight(1f)
             ) {
                 OutlinedTextField(
-                    value = drivingType,
-                    onValueChange = { newValue ->
-                        drivingType = newValue},
+
+                    value = searchWords,
+                    onValueChange = { searchWords = it  },
                     label = { Text("Driving Type") },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(fontSize = 20.sp)
                 )
             }
 
-            Spacer(modifier = Modifier.width(20.dp))
-
-            Box(
-                modifier = Modifier.weight(1f)
-            ) {
-                OutlinedTextField(
-                    value = place,
-                    onValueChange = {
-                            newValue -> place = newValue },
-                    label = { Text("Place") },
-//                    readOnly = true, // Prevent manual input
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = TextStyle(fontSize = 20.sp)
-                )
-            }
         }
 
 
@@ -622,13 +616,9 @@ fun SalesScreen(
                     }
                 } else true
 
-                val drivingTypeValid = drivingType.isBlank() ||
-                        rv.driverLicenceRequired.equals(drivingType, true)
+                val matchesSearch = rv.matchesSearch(searchWords)
 
-                val placeValid = place.isBlank() ||
-                        rv.place.equals(place.trim(), true)
-
-                dateValid && drivingTypeValid && placeValid
+                dateValid && matchesSearch
             }
         } else {
             filteredRVs
@@ -643,7 +633,7 @@ fun SalesScreen(
                     Log.d("AverageRating", "Loading Average Rating for RV on RentalPage: ${rv.id} is $")
                 }
 
-                RVItem(
+                RVItem2(
                     rv = rv,
                     navController = navController,
                     rvViewModel= rvViewModel,
@@ -705,9 +695,9 @@ fun RVItem2(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(20.dp)
             .clickable { navController.navigate("detail/${rv.id}?sourcePage=sales") },
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(15.dp)
     ) {
 
 

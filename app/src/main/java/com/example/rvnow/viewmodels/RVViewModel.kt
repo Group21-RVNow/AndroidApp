@@ -48,9 +48,13 @@ import androidx.compose.runtime.mutableStateOf
 import com.example.rvnow.model.RVType
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.CancellationException
+import javax.inject.Inject
 
 class RVViewModel : ViewModel() {
     private val rvApiService = RVInformation()
+
+
+//    private val rvApiService = RVInformation()
     private val _rvs = MutableStateFlow<List<RV>>(emptyList())
     val rvs: StateFlow<List<RV>> = _rvs
 
@@ -89,7 +93,14 @@ class RVViewModel : ViewModel() {
 
     init {
         fetchRVs()
-//        loadFavorites("userId")
+
+//        viewModelScope.launch {
+//            authViewModel.currentUser.collect { user ->
+//                user?.uid?.let { uid ->
+//                    loadFavorites(uid)
+//                }
+//            }
+//        }
     }
 
     fun fetchRVs() {
