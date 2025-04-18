@@ -95,21 +95,51 @@ class RVInformation {
 //                Log.e("Firestore", "Error adding comment", e)
 //            }
 //    }
-    fun addRating(rvId: String, rating: Rating) {
-        val db = FirebaseFirestore.getInstance()
-        val ratingRef = db.collection("rvs")           // The "rvs" collection
-            .document(rvId)                            // The specific RV document ID
-            .collection("ratings")                     // The "ratings" subcollection
-            .document(rating.userId)                   // Use userId as the document ID
+//    fun addRating(rvId: String, rating: Rating) {
+//        val db = FirebaseFirestore.getInstance()
+//        val ratingRef = db.collection("rvs")           // The "rvs" collection
+//            .document(rvId)                            // The specific RV document ID
+//            .collection("ratings")                     // The "ratings" subcollection
+//            .document(rating.userId)                   // Use userId as the document ID
+//
+//        ratingRef.set(rating)                          // Set the rating document
+//            .addOnSuccessListener {
+//                Log.d("Firestore", "Rating added successfully!")
+//            }
+//            .addOnFailureListener { e ->
+//                Log.e("Firestore", "Error adding rating", e)
+//            }
+//    }
 
-        ratingRef.set(rating)                          // Set the rating document
+    fun addRating(rvId: String, rating: Rating, onUpdated: (Double) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val ratingRef = db.collection("rvs")
+            .document(rvId)
+            .collection("ratings")
+            .document(rating.userId)
+
+        ratingRef.set(rating)
             .addOnSuccessListener {
                 Log.d("Firestore", "Rating added successfully!")
+
+                // 🟡 Fetch all ratings to recalculate average
+                db.collection("rvs")
+                    .document(rvId)
+                    .collection("ratings")
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+                        val ratings = snapshot.documents.mapNotNull { doc ->
+                            doc.getDouble("score")  // assuming your Rating has a 'score' field
+                        }
+                        val avg = if (ratings.isNotEmpty()) ratings.average() else 0.0
+                        onUpdated(avg)  // 🔁 Callback to update UI
+                    }
             }
             .addOnFailureListener { e ->
                 Log.e("Firestore", "Error adding rating", e)
             }
     }
+
 
     // Add this to your RVApiService class
     suspend fun addToFavorites(

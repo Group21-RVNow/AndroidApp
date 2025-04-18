@@ -6,6 +6,7 @@ package com.example.rvnow
 
 //import android.app.DatePickerDialog
 import java.time.LocalDate
+import androidx.compose.runtime.LaunchedEffect
 import java.time.format.DateTimeFormatter
 //import java.time.temporal.ChronoUnit
 import android.app.DatePickerDialog
@@ -160,8 +161,10 @@ fun StarRatingBar1(
 
 
 
-@RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
+//@RequiresApi(Build.VERSION_CODES.O)
+//@OptIn(ExperimentalMaterial3Api::class)
+
+
 @Composable
 fun RVDetailScreen(
     rvId: String,
@@ -285,9 +288,10 @@ fun RVDetailScreen(
             modifier = Modifier.background(Color.White)
         ) {
 
-
             rv?.let {
+
                 item {
+
                     Column(modifier = Modifier.padding(16.dp)) {
                         // Box to hold the image, rating, and add to cart button
                         Text(
@@ -368,8 +372,8 @@ fun RVDetailScreen(
                                                 if (isProcessingFavorite) return@IconButton
                                                 // Optimistic UI update
                                                 isFavorite = !isFavorite
-
                                                 currentUser?.id?.let { userId ->
+
                                                     isProcessingFavorite = true
                                                     rvViewModel.toggleFavorite(
                                                         userId = userId,
@@ -415,43 +419,6 @@ fun RVDetailScreen(
                                             }
                                         }
 
-
-//                                    IconButton(
-//                                        onClick = {
-//                                            if (isAddingToCart) return@IconButton
-//
-//                                            currentUser?.id?.let { userId ->
-//                                                isAddingToCart = true
-//                                                rvViewModel.addToCart(userId, it) {
-////
-//                                                        success ->
-//                                                    isAddingToCart = false
-//                                                    if (success) {
-//                                                        isAddedToCart = true
-//                                                    }
-//                                                    Toast.makeText(
-//                                                        context,
-//                                                        if (success) "Added to cart"
-//                                                        else "Failed to add to cart",
-//                                                        Toast.LENGTH_SHORT
-//                                                    ).show()
-//                                                }
-//                                            } ?: run { showWarningDialog = true }
-//                                        }
-//                                    ) {
-//                                        if (isAddingToCart) {
-//                                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
-//                                        } else {
-//                                            Icon(
-//                                                imageVector = Icons.Default.ShoppingCart,
-//                                                contentDescription = "Add to cart",
-//                                                modifier = Modifier.size(44.dp),
-//                                                tint = if (isAddedToCart) Color(0xFF4CAF50) else Color.Black
-//                                            )
-//                                        }
-//                                    }
-//                                }
-//                            }
                                     }
 
 
@@ -556,8 +523,10 @@ fun RVDetailScreen(
 
                                     CustomDivider()
                                     Spacer(modifier = Modifier.height(16.dp))
+
+
 //                        leave a rating:
-                                    // Comment Input
+
                                     Text(
                                         text = "Leave a Rating:",
                                         fontSize = 28.sp,
@@ -586,6 +555,7 @@ fun RVDetailScreen(
                                     Button(
                                         onClick = {
                                             if (isLoggedIn) {
+
                                                 // Ensure the rating is within a valid range, e.g., 0.0 to 5.0
                                                 if (rating in 0.0..5.0) {
                                                     currentUser?.let { user ->
@@ -606,7 +576,9 @@ fun RVDetailScreen(
                                                                 Toast.LENGTH_SHORT
                                                             ).show()
 
+
                                                             rvViewModel.loadAverageRating(rvId)
+
 
                                                         }
                                                     }
@@ -620,6 +592,7 @@ fun RVDetailScreen(
                                         },
                                         modifier = Modifier.align(Alignment.End)
                                     ) {
+
                                         Text("Submit Rating")
                                     }
                                     Spacer(modifier = Modifier.height(14.dp))

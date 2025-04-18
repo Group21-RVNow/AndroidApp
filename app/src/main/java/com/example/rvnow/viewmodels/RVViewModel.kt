@@ -132,21 +132,42 @@ class RVViewModel : ViewModel() {
     }
 
 
+//    fun addRating(rvId: String, rating: Rating, onComplete: () -> Unit = {}) {
+//        viewModelScope.launch {
+//            try {
+//                rvApiService.addRating(rvId, rating)
+//                _commentStatus.value = "Rating submitted successfully"
+//
+//                updateAverageRating(rvId, rating.rating)
+//                loadAverageRating(rvId)
+//
+//                // This is now just a regular callback
+//                onComplete()
+//            } catch (e: Exception) {
+//                _commentStatus.value = "Failed to submit rating: ${e.message}"
+//            }
+//        }
+//    }
+
+
+//  fxi the detail page problem: average rating is not immedatly after the submission
     fun addRating(rvId: String, rating: Rating, onComplete: () -> Unit = {}) {
         viewModelScope.launch {
             try {
-                rvApiService.addRating(rvId, rating)
+                rvApiService.addRating(rvId, rating, onUpdated = {
+                    // This will run AFTER rating is saved
+                    loadAverageRating(rvId)
+                })
+
                 _commentStatus.value = "Rating submitted successfully"
-
-                updateAverageRating(rvId, rating.rating)
-
-                // This is now just a regular callback
                 onComplete()
             } catch (e: Exception) {
                 _commentStatus.value = "Failed to submit rating: ${e.message}"
             }
         }
     }
+
+
 
 
 
