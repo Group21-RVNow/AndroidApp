@@ -43,6 +43,7 @@ private val SECTION_SPACING = 32.dp
 private val SECTION_SPACING_SMALL = 20.dp
 private val HORIZONTAL_PADDING = 16.dp
 private val CARD_CORNER_RADIUS = 12.dp
+private val CARD_CORNER_RADIUS_SMALL = 8.dp
 private val CARD_CONTENT_PADDING = 12.dp
 
 val primaryColor = Color(0xFFE27D5F)
@@ -209,7 +210,7 @@ fun GoRVingScreen(
                             .fillMaxWidth()
                             .padding(vertical = 12.dp)
                     ) {
-                        Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
+//                        Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
                         Text(
                             text = "Featured Destinations",
                             fontSize = 22.sp,
@@ -338,35 +339,31 @@ fun FeaturedDestinationCard(
                 contentScale = ContentScale.Crop
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .align(Alignment.BottomCenter)
-//                    .background(
-//                        neutralColor.copy(alpha = 0.5f)
-            )
-
-
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(CARD_CONTENT_PADDING)
+                    .fillMaxWidth()
             ) {
                 Text(
                     text = destination.name,
                     color = Color.Black,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Default
+                    fontFamily = FontFamily.Default,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Text(
                     text = "${destination.location}, ${destination.country}",
                     color = Color.Gray,
                     fontSize = 14.sp,
-                    fontFamily = FontFamily.Default
-
+                    fontFamily = FontFamily.Default,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
@@ -412,7 +409,6 @@ fun CountryCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // 硬编码国旗图片URL（使用flagcdn高质量图片）
     val flagImageUrl = when (country) {
         "Sweden" -> "https://flagcdn.com/w640/se.jpg"
         "Norway" -> "https://flagcdn.com/w640/no.jpg"
@@ -430,37 +426,41 @@ fun CountryCard(
     Card(
         modifier = modifier
             .width(120.dp)
-            .height(80.dp)
+            .height(100.dp)  // 增加高度以容纳文字
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(CARD_CORNER_RADIUS),
+        shape = RoundedCornerShape(CARD_CORNER_RADIUS_SMALL),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Box(
+        Column(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            AsyncImage(
-                model = flagImageUrl,
-                contentDescription = country,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-
-            // 半透明覆盖层
+            // 国旗图片部分
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f))
-            )
+                    .fillMaxWidth()
+                    .height(70.dp)  // 设置固定高度
+            ) {
+                AsyncImage(
+                    model = flagImageUrl,
+                    contentDescription = country,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
 
+            // 国家名称文字部分
             Text(
                 text = country,
-                color = Color.White,
+                color = Color.Black,  // 改为黑色文字
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Default,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 6.dp)  // 底部留白
             )
         }
     }
