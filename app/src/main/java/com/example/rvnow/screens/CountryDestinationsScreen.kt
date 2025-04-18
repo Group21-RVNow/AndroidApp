@@ -339,11 +339,11 @@ fun CountryDestinationItem(
 
 fun getCountryDescription(country: String): String {
     return when (country) {
-        "United States" -> "The United States offers diverse RV camping experiences, from coastal beaches to mountain ranges, desert landscapes, and lush forests. With an extensive network of national parks, state parks, and private campgrounds, it's a paradise for RV enthusiasts."
-        "Canada" -> "Canada boasts breathtaking natural beauty with its vast wilderness, pristine lakes, and majestic mountains. RV camping in Canada allows you to explore its diverse landscapes, from the Rocky Mountains to the Atlantic coastline, with well-maintained campgrounds throughout the country."
-        "Australia" -> "Australia's unique landscapes make it perfect for RV adventures. From the iconic Outback to stunning coastal drives, Australia offers freedom camping and well-equipped caravan parks. The country's diverse ecosystems provide unforgettable experiences for RV travelers."
-        "New Zealand" -> "New Zealand's compact size makes it ideal for RV exploration. With dramatic mountains, pristine lakes, and coastal scenery all within short driving distances, it's a campervan paradise. Freedom camping options and holiday parks provide flexible accommodation throughout both islands."
-        "United Kingdom" -> "The UK offers charming countryside and coastal RV camping experiences. From the rolling hills of the Lake District to the dramatic coastlines of Cornwall and Scotland, there are numerous caravan sites and holiday parks with excellent facilities for motorhome travelers."
+        "Denmark" -> "Denmark offers scenic coastal routes and charming countryside perfect for RV travel. With well-maintained campgrounds, easy road access, and a compact geography, it's a great destination for exploring Viking heritage and coastal beauty by RV."
+        "Finland" -> "Finland is an RV-friendly country known for its thousands of lakes, dense forests, and peaceful natural surroundings. It offers excellent campsite infrastructure and the freedom to explore vast wilderness areas under the Everyman's Right."
+        "Norway" -> "Norway's dramatic fjords, mountains, and scenic coastal roads create a stunning backdrop for RV adventures. With a strong tradition of outdoor life and numerous campsites, Norway is perfect for travelers seeking nature and breathtaking views."
+        "Sweden" -> "Sweden combines rich forests, beautiful lakes, and a relaxed travel atmosphere. Thanks to the Right of Public Access, RV travelers can enjoy the countryside freely, along with a wide range of official campgrounds and nature spots."
         else -> "Explore the beautiful destinations of $country by RV. From scenic landscapes to cultural attractions, $country offers unique experiences for RV travelers with various campgrounds and facilities throughout the country."
     }
 }
+
