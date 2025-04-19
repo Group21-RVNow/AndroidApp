@@ -1,11 +1,9 @@
 package com.example.rvnow
-
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -37,16 +35,12 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.rvnow.model.RV
 import com.example.rvnow.viewmodels.RVViewModel
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
-import android.widget.RatingBar
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -55,93 +49,31 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
-//import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-//import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.layout.ContentScale
-//import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-//import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
-//import com.example.rvnow.model.RV
-//import com.example.rvnow.viewmodels.RVViewModel
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-//import androidx.compose.foundation.shape.RoundedCornerShape
-//import androidx.compose.material.*
-//import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
-
 import androidx.compose.material3.Icon
-
 import androidx.compose.foundation.layout.Row
-
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.*
-//import androidx.compose.runtime.Composable
-
 import androidx.compose.foundation.layout.Column
-
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
-
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.runtime.livedata.observeAsState
-
-import androidx.compose.runtime.setValue
-
-import androidx.compose.ui.platform.LocalDensity
-//import androidx.compose.ui.text.style.TextAlign
-import com.example.rvnow.model.Comment
-import com.example.rvnow.model.Rating
-
-import java.util.*
 import com.example.rvnow.viewmodels.AuthViewModel
 import androidx.compose.foundation.layout.Column as Column
-//import android.widget.Toast
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.FlipToBack
-import androidx.compose.material.icons.filled.StarHalf
-import androidx.compose.ui.platform.LocalContext
-
 private val SECTION_SPACING_LARGE = 32.dp
 private val SECTION_SPACING = 24.dp
 private val SECTION_SPACING_SMALL = 16.dp
-
 private val BUTTONS_TO_RENTAL_SPACING_LARGE = 48.dp
 private val BUTTONS_TO_RENTAL_SPACING = 40.dp
 private val BUTTONS_TO_RENTAL_SPACING_SMALL = 32.dp
-
 private val BETWEEN_RVS_SPACING_LARGE = 48.dp
 private val BETWEEN_RVS_SPACING = 36.dp
 private val BETWEEN_RVS_SPACING_SMALL = 24.dp
-
 private val HORIZONTAL_PADDING_LARGE = 24.dp
 private val HORIZONTAL_PADDING = 16.dp
 private val HORIZONTAL_PADDING_SMALL = 12.dp
@@ -154,9 +86,6 @@ private val BUTTON_HEIGHT = 48.dp
 private val BUTTON_CORNER_RADIUS = 8.dp
 private val CARD_CORNER_RADIUS = 12.dp
 private val CARD_CONTENT_PADDING = 12.dp
-
-
-
 
 @Composable
 fun HomeScreen(
@@ -196,12 +125,7 @@ fun HomeScreen(
         isSmallScreen -> BETWEEN_RVS_SPACING_SMALL
         else -> BETWEEN_RVS_SPACING
     }
-//    val averageRating by rvViewModel.averageRating.collectAsState()
-//    LaunchedEffect(rvId) {
-//        rvViewModel.loadAverageRating(rvId)
-//        Log.d("AverageRating", "Average Rating: $averageRating")
-//
-//    }
+
 
     Column(
         modifier = Modifier
@@ -330,35 +254,6 @@ private fun ActionButtonsSection(
     ) {
         val iconWidth = 24.dp
         val buttonSpacing = if (isSmallScreen) BUTTON_SPACING_SMALL else BUTTON_SPACING
-
-//        val colors = listOf(
-//            // 主色：自然大地色 + 温暖木质调
-//            Color(0xFF5D8AA8),  // 湖蓝色（自然天空/水域）
-//            Color(0xFFE27D5F),  // 陶土橙（温暖活力）
-//            Color(0xFF6B8E23),  // 苔藓绿（自然植被）
-//            Color(0xFFA78A7F)   // 浅驼色（木质温暖）
-//        ).map { darkenColor(it) }
-
-//        val colors = listOf(
-//            Color(0xFF3A86FF),  // 活力湖蓝（自然与水）
-//            Color(0xFFFF9E00),  // 阳光橙（温暖与能量）
-//            Color(0xFF4CAF50),  // 生态绿（森林与生机）
-//            Color(0xFFFF6584)   // 珊瑚粉（欢乐与生活）
-//        ).map { darkenColor(it) }
-
-//        val colors = listOf(
-//            Color(0xFF5D8AA8),  // 灰湖蓝
-//            Color(0xFFF4A261),  // 砂岩橙
-//            Color(0xFF90BE6D),  // 嫩草绿
-//            Color(0xFFFFB4A2)   // 柔珊瑚
-//        ).map { darkenColor(it) }
-
-//        val colors = listOf(
-//            Color(0xFF8BA88E),  // 雾霭绿
-//            Color(0xFFD4B483),  // 亚麻棕
-//            Color(0xFFA5B5C3),  // 砂岩灰
-//            Color(0xFFC7A297)   // 陶土粉
-//        ).map { darkenColor(it) }
 
 
         val colors = listOf(
@@ -514,53 +409,6 @@ private fun CustomActionButton(
     }
 }
 
-//@Composable
-//private fun PopularRVsSection(
-//    title: String,
-//    rvs: List<RV>,
-//    navController: NavController,
-//    horizontalPadding: Dp,
-//    authViewModel: AuthViewModel,
-//    rvViewModel: RVViewModel
-//) {
-//    Column(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = horizontalPadding)
-//    ) {
-//        Text(
-//            text = title,
-//            color = Color.Black,
-//            fontSize = 20.sp,
-//            fontWeight = FontWeight.Bold,
-//            modifier = Modifier.padding(
-//                start = SECTION_TITLE_PADDING_START,
-//                bottom = SECTION_TITLE_PADDING_BOTTOM
-//            )
-//        )
-//
-//        LazyRow(
-//            horizontalArrangement = Arrangement.spacedBy(CARD_SPACING),
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            items(rvs) { rv ->
-//                RVCard(
-//                    rv = rv,
-////                    rvId=rvId,
-//                    title = rv.name ?: if (title.contains("Rental")) "Luxury RV" else "Premium RV",
-//                    features = rv.description ?: if (title.contains("Rental"))
-//                        "Family | Amazing Features | Comfort..."
-//                    else "Spacious | Luxury | All Included",
-//                    navController = navController,
-//                    horizontalPadding = horizontalPadding,
-//                    rvViewModel = rvViewModel,
-//                    authViewModel=authViewModel,
-//
-//                )
-//            }
-//        }
-//    }
-//}
 @Composable
 private fun PopularRVsSection(
     title: String,
@@ -685,8 +533,6 @@ private fun RVCard(
     val isLoggedIn by authViewModel.isLoggedIn.observeAsState(initial = false)
     var showWarningDialog by remember { mutableStateOf(false) }
     val currentUser by authViewModel.userInfo.observeAsState()
-//    val averageRating by rvViewModel.averageRating.collectAsState()
-//    val averageRating by rvViewModel.averageRating.collectAsState()
     val averageRating = rvViewModel.averageRatings.collectAsState().value[rvId] ?: 0f
 
 
@@ -717,7 +563,6 @@ private fun RVCard(
             .width(cardWidth)
             .height(cardHeight)
             .clickable { navController.navigate("detail/${rv.id}?sourcePage=home") },
-//        shape = RoundedCornerShape(CARD_CORNER_RADIUS)
     ) {
         Column {
             // Image section with fixed height
@@ -808,15 +653,13 @@ private fun RVCard(
             // Text section with fixed height
             Column(
                 modifier = Modifier
-//                    .height(textSectionHeight)
                     .fillMaxWidth()
                     .padding(horizontal = CARD_CONTENT_PADDING, vertical = CARD_CONTENT_PADDING)
             ) {
                 // Title row
                 Box(
                     modifier = Modifier.fillMaxWidth(),
-//                    contentAlignment = Alignment.Center, // This centers the content both horizontally and vertically
-//                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+
                 ) {
                     Text(
                         text = title,
@@ -847,12 +690,10 @@ private fun RVCard(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
-//                    horizontalArrangement = Arrangement.spacedBy(64.dp)
                 ) {
 
                     Box(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        contentAlignment = Alignment.Start
+
                     ) {
                         // Display stars and average rating
                         StarRatingBar2(
@@ -925,13 +766,6 @@ private fun RVCard(
                     }
 
                 }
-
-
-
-
-
-                // Spacer to push content up if there's extra space
-//                    Spacer(modifier = Modifier.weight(1f))
             }
         }
     }

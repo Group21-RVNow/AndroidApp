@@ -114,7 +114,7 @@ fun DestinationDetailsScreen(
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-                    // 主图片
+                    // 修改后的主图片部分 - 移除了名称和背景
                     item {
                         Box {
                             AsyncImage(
@@ -126,48 +126,7 @@ fun DestinationDetailsScreen(
                                 contentScale = ContentScale.Crop
                             )
 
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(80.dp)
-                                    .align(Alignment.BottomCenter)
-                                    .background(
-                                        Color.Black.copy(alpha = 0.5f)
-                                    )
-                            )
-
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.BottomStart)
-                                    .padding(HORIZONTAL_PADDING, SECTION_SPACING_SMALL)
-                            ) {
-                                Text(
-                                    text = destination.name,
-                                    color = Color.White,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = FontFamily.Serif
-                                )
-
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    Icon(
-                                        Icons.Default.LocationOn,
-                                        contentDescription = "Location",
-                                        tint = Color.White,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Text(
-                                        text = "${destination.location}, ${destination.country}",
-                                        color = Color.White,
-                                        fontSize = 14.sp,
-                                        fontFamily = FontFamily.Default
-                                    )
-                                }
-                            }
-
+                            // 只保留评分显示
                             if (destination.rating > 0) {
                                 Box(
                                     modifier = Modifier
@@ -404,7 +363,7 @@ fun DestinationDetailsScreen(
                         Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
                     }
 
-                    // 停车位详情 - 改进版
+                    // 停车位详情
                     item {
                         Column(
                             modifier = Modifier.padding(HORIZONTAL_PADDING, SECTION_SPACING_SMALL)
@@ -485,14 +444,13 @@ fun DestinationDetailsScreen(
 @Composable
 fun ParkingSpotCard(spot: Map<String, Any>, tertiaryColor: Color) {
     val name = spot["name"]?.toString() ?: "Unnamed Spot"
-    val imageUrl = spot["imageUrl"]?.toString()
     val coordinates = spot["coordinates"]?.toString()?.replace("{", "")?.replace("}", "")
 
-    // 提取坐标中的纬度和经度
+    // Extract latitude and longitude
     val latitude = coordinates?.split(",")?.getOrNull(0)?.split("=")?.getOrNull(1)?.trim()
     val longitude = coordinates?.split(",")?.getOrNull(1)?.split("=")?.getOrNull(1)?.trim()
 
-    // 格式化坐标显示
+    // Format coordinates display
     val formattedLocation = if (latitude != null && longitude != null) {
         "Lat: $latitude, Long: $longitude"
     } else {
@@ -506,80 +464,48 @@ fun ParkingSpotCard(spot: Map<String, Any>, tertiaryColor: Color) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column {
-            // 停车位图片
-            if (!imageUrl.isNullOrEmpty()) {
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = name,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(140.dp)
-                        .clip(RoundedCornerShape(topStart = CARD_CORNER_RADIUS, topEnd = CARD_CORNER_RADIUS)),
-                    contentScale = ContentScale.Crop
+        Column(
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Text(
+                text = name,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Default
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    Icons.Default.Place,
+                    contentDescription = "Location",
+                    tint = tertiaryColor,
+                    modifier = Modifier.size(16.dp)
                 )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(140.dp)
-                        .background(tertiaryColor.copy(alpha = 0.2f))
-                        .clip(RoundedCornerShape(topStart = CARD_CORNER_RADIUS, topEnd = CARD_CORNER_RADIUS)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Default.LocalParking,
-                        contentDescription = "Parking",
-                        tint = tertiaryColor,
-                        modifier = Modifier.size(48.dp)
-                    )
-                }
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Text(
+                    text = formattedLocation,
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily.Default,
+                    color = Color.DarkGray
+                )
             }
 
-            // 停车位信息
-            Column(
-                modifier = Modifier.padding(12.dp)
-            ) {
-                Text(
-                    text = name,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Default
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.Place,
-                        contentDescription = "Location",
-                        tint = tertiaryColor,
-                        modifier = Modifier.size(16.dp)
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
+            // Add other parking spot information
+            spot.forEach { (key, value) ->
+                if (key != "name" && key != "imageUrl" && key != "coordinates") {
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = formattedLocation,
+                        text = "$key: $value",
                         fontSize = 14.sp,
                         fontFamily = FontFamily.Default,
                         color = Color.DarkGray
                     )
-                }
-
-                // 添加其他可能的停车位信息
-                spot.forEach { (key, value) ->
-                    if (key != "name" && key != "imageUrl" && key != "coordinates") {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "$key: $value",
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily.Default,
-                            color = Color.DarkGray
-                        )
-                    }
                 }
             }
         }
