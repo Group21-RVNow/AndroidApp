@@ -322,86 +322,96 @@ fun FeaturedDestinationCard(
     neutralColor: Color,
     modifier: Modifier = Modifier
 ) {
+    // Image height increased by 50% (120dp * 1.5 = 180dp)
+    val imageHeight = 180.dp
+    // Total card height calculation (image + text section)
+    val cardHeight = imageHeight + 60.dp // Reduced from 80dp to 60dp for less bottom padding
+
     Card(
         modifier = modifier
             .width(280.dp)
-            .height(200.dp)
+            .height(cardHeight)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(CARD_CORNER_RADIUS),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Box {
-            AsyncImage(
-                model = destination.imageUrl,
-                contentDescription = destination.name,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+        Column {
+            // Image section with 50% increased height
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(imageHeight)
+            ) {
+                AsyncImage(
+                    model = destination.imageUrl,
+                    contentDescription = destination.name,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
 
+                // Rating badge
+                if (destination.rating > 0) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(8.dp)
+                            .background(
+                                color = primaryColor,
+                                shape = RoundedCornerShape(16.dp)
+                            )
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Star,
+                                contentDescription = "Rating",
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Text(
+                                text = "${destination.rating}",
+                                color = Color.White,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Text section with reduced padding (matches travel guide style)
             Column(
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(CARD_CONTENT_PADDING)
-                    .fillMaxWidth()
+                    .padding(horizontal = CARD_CONTENT_PADDING)
+                    .padding(top = 8.dp, bottom = 8.dp) // Reduced bottom padding
             ) {
                 Text(
                     text = destination.name,
-                    color = Color.Black,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Default,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth()
+                    overflow = TextOverflow.Ellipsis
                 )
 
+                Spacer(modifier = Modifier.height(4.dp))
+
                 Text(
-                    text = "${destination.location}, ${destination.country}",
-                    color = Color.Gray,
+                    text = destination.location, // Removed country to avoid duplication
                     fontSize = 14.sp,
                     fontFamily = FontFamily.Default,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth()
+                    color = Color.Gray
                 )
-            }
-
-            // 添加评分标签
-            if (destination.rating > 0) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .background(
-                            color = primaryColor,
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Icon(
-                            Icons.Default.Star,
-                            contentDescription = "Rating",
-                            tint = Color.White,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Text(
-                            text = "${destination.rating}",
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
             }
         }
     }
 }
-
 
 @Composable
 fun CountryCard(
@@ -472,20 +482,25 @@ fun TravelGuideCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Match the featured destination card dimensions
+    val imageHeight = 180.dp // 50% taller than original
+    val cardHeight = imageHeight + 60.dp
+
     Card(
         modifier = modifier
             .width(280.dp)
-            .height(180.dp)
+            .height(cardHeight)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(CARD_CORNER_RADIUS),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column {
+            // Taller image section
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
+                    .height(imageHeight)
             ) {
                 AsyncImage(
                     model = travelGuide.imageUrl,
@@ -495,8 +510,11 @@ fun TravelGuideCard(
                 )
             }
 
+            // Text section with same padding as featured destinations
             Column(
-                modifier = Modifier.padding(CARD_CONTENT_PADDING)
+                modifier = Modifier
+                    .padding(horizontal = CARD_CONTENT_PADDING)
+                    .padding(top = 8.dp, bottom = 8.dp)
             ) {
                 Text(
                     text = travelGuide.title,
