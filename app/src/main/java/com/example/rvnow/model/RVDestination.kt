@@ -9,6 +9,7 @@ data class RVDestination(
     val imageUrl: String = "",
     val facilities: List<String> = listOf(),
     val bestTimeToVisit: String = "",
+    val bestTime: String = "",
     val priceRange: String = "",
     val rating: Double = 0.0,
     val isFeatured: Boolean = false,

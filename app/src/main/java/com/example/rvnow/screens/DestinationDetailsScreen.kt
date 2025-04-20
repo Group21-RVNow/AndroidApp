@@ -32,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.rvnow.viewmodels.GoRVingViewModel
+import androidx.compose.ui.text.style.TextOverflow
 
 private val SECTION_SPACING = 24.dp
 private val SECTION_SPACING_SMALL = 16.dp
@@ -160,7 +161,7 @@ fun DestinationDetailsScreen(
                         }
                     }
 
-                    // 信息卡片
+
                     item {
                         Card(
                             modifier = Modifier
@@ -171,84 +172,105 @@ fun DestinationDetailsScreen(
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                             colors = CardDefaults.cardColors(containerColor = Color.White)
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(CARD_CONTENT_PADDING),
-                                horizontalArrangement = Arrangement.SpaceEvenly
+                            Column(
+                                modifier = Modifier.padding(CARD_CONTENT_PADDING)
                             ) {
-                                // 价格范围
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally
+                                // 第一行：图标和主要信息
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
                                 ) {
-                                    Icon(
-                                        Icons.Default.AttachMoney,
-                                        contentDescription = "Price Range",
-                                        tint = primaryColor,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = destination.priceRange ?: "N/A",
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        textAlign = TextAlign.Center
-                                    )
+                                    // 价格范围
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Icon(
+                                            Icons.Default.AttachMoney,
+                                            contentDescription = "Price Range",
+                                            tint = primaryColor,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = destination.priceRange ?: "N/A",
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+
+                                    // 最佳时间
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Icon(
+                                            Icons.Default.DateRange,
+                                            contentDescription = "Best Time",
+                                            tint = secondaryColor,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = destination.bestTime ?: "N/A",
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+
+                                    // 停车位
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Icon(
+                                            Icons.Default.LocalParking,
+                                            contentDescription = "Parking",
+                                            tint = tertiaryColor,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = "${destination.parkingSpots?.size ?: 0}",
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+                                }
+
+                                // 第二行：标题（确保对齐）
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                ) {
                                     Text(
                                         text = "Price Range",
                                         fontSize = 12.sp,
                                         color = Color.Gray,
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.weight(1f)
                                     )
-                                }
 
-                                // 最佳时间
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Icon(
-                                        Icons.Default.DateRange,
-                                        contentDescription = "Best Time",
-                                        tint = secondaryColor,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = destination.bestTimeToVisit?.take(10) ?: "N/A",
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        textAlign = TextAlign.Center
-                                    )
                                     Text(
                                         text = "Best Time",
                                         fontSize = 12.sp,
                                         color = Color.Gray,
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.weight(1f)
                                     )
-                                }
 
-                                // 停车位
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Icon(
-                                        Icons.Default.LocalParking,
-                                        contentDescription = "Parking",
-                                        tint = tertiaryColor,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = "${destination.parkingSpots?.size ?: 0}",
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        textAlign = TextAlign.Center
-                                    )
                                     Text(
                                         text = "Parking Spots",
                                         fontSize = 12.sp,
                                         color = Color.Gray,
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.weight(1f)
                                     )
                                 }
                             }
