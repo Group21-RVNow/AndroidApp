@@ -3,7 +3,7 @@ package com.example.rvnow.api
 import android.util.Log
 import com.example.rvnow.model.CartItem
 import com.example.rvnow.model.Comment
-import com.example.rvnow.model.Favorite
+import com.example.rvnow.model.Favourite
 import com.example.rvnow.model.RV
 import com.example.rvnow.model.RVType
 import com.example.rvnow.model.Rating
@@ -289,6 +289,22 @@ class RVInformation {
             }
     }
 
+    fun fetchedFavorites(userId: String, onFavoritesFetched: (List<Favourite>) -> Unit) {
+        db.collection("users")
+            .document(userId)
+            .collection("favorites")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.e("Firestore", "Error fetching favorites", e)
+                    return@addSnapshotListener
+                }
+
+                val favorites = snapshot?.documents?.mapNotNull { it.toObject(Favourite::class.java) }
+                onFavoritesFetched(favorites ?: emptyList())
+            }
+    }
+
+
 
 //    suspend fun getAllFavorites(userId: String): List<Favorite> {
 //            if (userId.isBlank()) {
@@ -318,28 +334,27 @@ class RVInformation {
 
 
     // In RVInformation.kt
-    suspend fun getAllFavorites(userId: String): List<Favorite> {
-        return try {
-            val querySnapshot = db.collection("users")
-                .document(userId)
-                .collection("favorites")
-                .limit(50) // Add reasonable limits
-                .get()
-                .await()
-            delay(300)
-
-            Log.d("Firestore", "Raw favorites docs: ${querySnapshot.documents}")
-
-            querySnapshot.toObjects(Favorite::class.java).also {
-                Log.d("Firestore", "Parsed ${it.size} favorites")
-            }
-        } catch (e: Exception) {
-            Log.e("Firestore", "Error getting favorites", e)
-//            emptyList()
-            throw e
-        }
-
-    }
+//    suspend fun getAllFavorites(userId: String): List<Favourite> {
+//        return try {
+//            val querySnapshot = db.collection("users")
+//                .document(userId)
+//                .collection("favorites")
+//                .limit(50) // Add reasonable limits
+//                .get()
+//                .await()
+//
+//            Log.d("Firestore", "Raw favorites docs: ${querySnapshot.documents}")
+//
+//            querySnapshot.toObjects(Favourite::class.java).also {
+//                Log.d("Firestore", "Parsed ${it.size} favorites")
+//            }
+//        } catch (e: Exception) {
+//            Log.e("Firestore", "Error getting favorites", e)
+////            emptyList()
+//            throw e
+//        }
+//
+//    }
 
 
     suspend fun addAllRV(rv: RV) {

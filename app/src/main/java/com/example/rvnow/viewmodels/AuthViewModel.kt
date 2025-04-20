@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import androidx.lifecycle.ViewModel
 import com.example.rvnow.api.RVInformation
-import com.example.rvnow.model.Favorite
+import com.example.rvnow.model.Favourite
 import com.example.rvnow.model.User
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore

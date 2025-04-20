@@ -472,75 +472,75 @@ fun SalesScreen(
     }
 
     Column() {
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
-                .padding(bottom = 16.dp)
-                .background(color = Color.White)
-        ) {
-
-            // Loading image from drawable or assets
-            Image(
-                painter = image1,
-                contentDescription = "RV Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-//                modifier = Modifier.width(30000.dp)
-
-            )
-
-            Text(
-                text = "Welcome to RVNow",
-                color = Color.White,
-                fontSize = 34.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
+//
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(250.dp)
+//                .padding(bottom = 16.dp)
+//                .background(color = Color.White)
+//        ) {
+//
+//            // Loading image from drawable or assets
+//            Image(
+//                painter = image1,
+//                contentDescription = "RV Image",
+//                modifier = Modifier.fillMaxSize(),
+//                contentScale = ContentScale.Crop
+////                modifier = Modifier.width(30000.dp)
+//
+//            )
+//
+//            Text(
+//                text = "Welcome to RVNow",
+//                color = Color.White,
+//                fontSize = 34.sp,
+//                fontWeight = FontWeight.Bold,
+//                modifier = Modifier.align(Alignment.Center)
+//            )
+//        }
         // Start Date Field
-        Row(modifier = Modifier.padding(10.dp)) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable { startDatePickerDialog.show() }
-//                    .pointerInput(Unit) {
-//                        detectTapGestures(onTap = {
-//                            startDatePickerDialog.show()
-//                        })
-//                    }// Entire box is clickable
-            ) {
-                OutlinedTextField(
-                    value = startDate,
-//                    onValueChange = { newValue ->
-//                        startDate = newValue},
-                    onValueChange = {
-                        searchWords = it
-                        isSearchPerformed = false      // ← stop filtering while typing
-                    },
-                    readOnly = true,  // Prevent manual input
-                    label = { Text("Start Date") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusable(false)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(20.dp))
-
-            OutlinedTextField(
-                value = endDate,
-                onValueChange = {newValue ->
-                    endDate = newValue },
-                readOnly = true,  // Prevent typing
-                label = { Text("End Date") },
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable { endDatePickerDialog.show() } // Open Date Picker
-            )
-
-        }
+//        Row(modifier = Modifier.padding(10.dp)) {
+//            Box(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .clickable { startDatePickerDialog.show() }
+////                    .pointerInput(Unit) {
+////                        detectTapGestures(onTap = {
+////                            startDatePickerDialog.show()
+////                        })
+////                    }// Entire box is clickable
+//            ) {
+//                OutlinedTextField(
+//                    value = startDate,
+////                    onValueChange = { newValue ->
+////                        startDate = newValue},
+//                    onValueChange = {
+//                        searchWords = it
+//                        isSearchPerformed = false      // ← stop filtering while typing
+//                    },
+//                    readOnly = true,  // Prevent manual input
+//                    label = { Text("Start Date") },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .focusable(false)
+//                )
+//            }
+//
+//            Spacer(modifier = Modifier.width(20.dp))
+//
+//            OutlinedTextField(
+//                value = endDate,
+//                onValueChange = {newValue ->
+//                    endDate = newValue },
+//                readOnly = true,  // Prevent typing
+//                label = { Text("End Date") },
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .clickable { endDatePickerDialog.show() } // Open Date Picker
+//            )
+//
+//        }
 
 
 
@@ -555,8 +555,9 @@ fun SalesScreen(
                 OutlinedTextField(
 
                     value = searchWords,
-                    onValueChange = { searchWords = it  },
-                    label = { Text("Driving Type") },
+                    onValueChange = { searchWords = it
+                        isSearchPerformed = false },
+                    label = { Text("Name, Desciription, Place") },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(fontSize = 20.sp)
                 )

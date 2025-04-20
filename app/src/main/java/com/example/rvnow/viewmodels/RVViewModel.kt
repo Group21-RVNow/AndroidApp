@@ -15,7 +15,7 @@ import com.example.rvnow.model.Comment
 import kotlinx.coroutines.Job
 
 import com.example.rvnow.model.CartItem
-import com.example.rvnow.model.Favorite
+import com.example.rvnow.model.Favourite
 import com.example.rvnow.model.Rating
 
 import com.example.rvnow.model.RVType
@@ -25,7 +25,7 @@ import kotlinx.coroutines.CancellationException
 class RVViewModel : ViewModel() {
     private val rvApiService = RVInformation()
 
-//    private val rvApiService = RVInformation()
+    //    private val rvApiService = RVInformation()
     private val _rvs = MutableStateFlow<List<RV>>(emptyList())
     val rvs: StateFlow<List<RV>> = _rvs
 
@@ -46,8 +46,8 @@ class RVViewModel : ViewModel() {
     private val _ratings = MutableStateFlow<List<Comment>>(emptyList())
     val ratings: StateFlow<List<Comment>> = _ratings
 
-    private val _fetchedFavourites = MutableStateFlow<List<Favorite>>(emptyList())
-    val fetchedFavourites: StateFlow<List<Favorite>> = _fetchedFavourites
+    private val _fetchedFavourites = MutableStateFlow<List<Favourite>>(emptyList())
+    val fetchedFavourites: StateFlow<List<Favourite>> = _fetchedFavourites
 
     private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
     val cartItems: StateFlow<List<CartItem>> = _cartItems
@@ -121,7 +121,7 @@ class RVViewModel : ViewModel() {
 //    }
 
 
-//  fxi the detail page problem: average rating is not immedatly after the submission
+    //  fxi the detail page problem: average rating is not immedatly after the submission
     fun addRating(rvId: String, rating: Rating, onComplete: () -> Unit = {}) {
         viewModelScope.launch {
             try {
@@ -234,18 +234,17 @@ class RVViewModel : ViewModel() {
     fun loadFavorites(userId: String) {
         viewModelScope.launch {
             try {
-                val result = rvInformation.getAllFavorites(userId)
-                // Log the raw Firestore data for debugging
-                Log.d("ViewModel", "Raw Firestore data: $result")
-                _fetchedFavourites.value = result
-            } catch (e: Exception) {
-                if (e !is CancellationException) { // Handle non-cancellation exceptions
-                    Log.e("ViewModel", "Permanent error", e)
-                    _fetchedFavourites.value = emptyList() // Reset the list on error
+                rvInformation.fetchedFavorites(userId) { favorites ->
+                    _fetchedFavourites.value = favorites
+                    Log.d("ViewModel", "Fetched favorites: $favorites")
                 }
+            } catch (e: Exception) {
+                Log.e("ViewModel", "Error fetching favorites", e)
+                _fetchedFavourites.value = emptyList()
             }
         }
     }
+
 
 //    fun loadFavorites(userId: String) {
 //        viewModelScope.launch {
