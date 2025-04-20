@@ -23,7 +23,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
@@ -125,6 +127,21 @@ fun RentalScreen(
     }
 
     Column() {
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically,
+//            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+//        ) {
+//            Icon(Icons.Default.Explore, contentDescription = null, tint = Color(0xFF3F51B5))
+//            Spacer(modifier = Modifier.width(8.dp))
+//            Text("Explore RV Rentals", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+//        }
+//
+//        Text(
+//            text = "Filter by place, availability, or type below.",
+//            color = Color.Gray,
+//            fontSize = 14.sp,
+//            modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+//        )
 
 //        Box(
 //            modifier = Modifier
@@ -196,10 +213,6 @@ fun RentalScreen(
         }
 
 
-
-
-//        Spacer(modifier = Modifier.height(10.dp))
-
         Row (modifier = Modifier.padding(10.dp)){
             Box(
                 modifier = Modifier
@@ -220,7 +233,7 @@ fun RentalScreen(
         }
 
 
-        Spacer(modifier = Modifier.height(10.dp))
+//        Spacer(modifier = Modifier.height(10.dp))
 
         Box(
             modifier = Modifier
@@ -243,7 +256,7 @@ fun RentalScreen(
             }
 
         }
-        Spacer(modifier = Modifier.height(10.dp))
+//        Spacer(modifier = Modifier.height(10.dp))
 
 
 

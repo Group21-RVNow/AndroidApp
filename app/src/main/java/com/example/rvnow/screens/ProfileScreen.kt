@@ -47,9 +47,6 @@ import com.example.rvnow.model.User
 //import com.example.rvnow.viewmodels.RVViewModel
 @Composable
 fun ProfileScreen(
-//    navController: NavController,
-//    authViewModel: AuthViewModel,
-//    rvViewModel: RVViewModel,
     navController: NavController,
     rvViewModel: RVViewModel,
     authViewModel: AuthViewModel
@@ -70,7 +67,7 @@ fun ProfileScreen(
 
     val fullName by authViewModel.fullName.observeAsState()
     val email = userInfo?.email ?: "No Email"  // Fallback value
-    val profilePictureUrl = userInfo?.profilePictureUrl ?: ""  // Fallback to empty string
+    val profilePictureUrl = userInfo?.profilePictureUrl ?: ""
     val favorites: List<Favourite> by rvViewModel.fetchedFavourites.collectAsState()
     val publishedRV = rvList.filter { it.ownerId == userId }
 
@@ -149,22 +146,22 @@ fun ProfileScreen(
 
             CustomDivider()
 
-            if (isLoggedIn) {
-
-                FavoriteSection(
-//                    title = "Rental Favorites",
-                    favourites = favorites.filter { !it.isForSale },
-                    navController = navController
-                )
-
-                // Add Purchase Favorites too if needed
-                CustomDivider()
-            } else {
-                Text("You are not logged in", modifier = Modifier.padding(16.dp))
-            }
-
-
-            CustomDivider()
+//            if (isLoggedIn) {
+//
+//                FavoriteSection(
+////                    title = "Rental Favorites",
+//                    favourites = favorites.filter { !it.isForSale },
+//                    navController = navController
+//                )
+//
+//                // Add Purchase Favorites too if needed
+//                CustomDivider()
+//            } else {
+//                Text("You are not logged in", modifier = Modifier.padding(16.dp))
+//            }
+//
+//
+//            CustomDivider()
 
 
         }
@@ -333,7 +330,7 @@ private fun PublishedSection(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Published RVs",
+                text = "Published RVs++",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -405,7 +402,8 @@ fun FavoriteRVCard(
 
 @Composable
 private fun FavoriteSection(
-    favourites: List<Favourite>,
+    title: String,
+    favorites: List<Favourite>,
     navController: NavController
 ) {
     Column {
@@ -415,13 +413,13 @@ private fun FavoriteSection(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Published RVs",
+                text = title,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "${favourites.size} Published",
+                text = "${favorites.size} Favorites",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
@@ -434,15 +432,18 @@ private fun FavoriteSection(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(favourites) { favourite ->
+            items(favorites) {
+                    rv ->
                 FavoriteRVCard(
-                    favorite = favourite, onClick = { navController.navigate("detail/${favourite.rvId}") },
-                    navController = navController
+                    favorite = rv,
+                    navController = navController,
+//                    onClick = { navController.navigate("detail/${rv.rvId}?sourcePage=profile") }
                 )
             }
         }
     }
 }
+
 
 
 @Composable
