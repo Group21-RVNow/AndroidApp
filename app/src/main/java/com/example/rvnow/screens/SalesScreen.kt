@@ -566,8 +566,6 @@ fun SalesScreen(
         }
 
 
-        Spacer(modifier = Modifier.height(10.dp))
-
         Box(
             modifier = Modifier
                 .fillMaxWidth().padding(10.dp)
@@ -589,7 +587,6 @@ fun SalesScreen(
             }
 
         }
-        Spacer(modifier = Modifier.height(10.dp))
 
 
 
