@@ -84,7 +84,7 @@ fun GoRVingScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(primaryColor.copy(alpha = 0.2f))
+                        .background(secondaryColor.copy(alpha = 0.2f))
                         .padding(vertical = 12.dp, horizontal = HORIZONTAL_PADDING)
                 ) {
                     Column {
@@ -98,13 +98,13 @@ fun GoRVingScreen(
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(CARD_CORNER_RADIUS))
-                        Text(
-                            "Discover amazing RV destinations",
-                            fontFamily = FontFamily.Serif,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color.Black
-                        )
+//                        Text(
+//                            "Discover amazing RV destinations",
+//                            fontFamily = FontFamily.Serif,
+//                            fontSize = 16.sp,
+//                            fontWeight = FontWeight.Medium,
+//                            color = Color.Black
+//                        )
                     }
                 }
             }
