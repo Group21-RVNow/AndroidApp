@@ -158,18 +158,19 @@ fun GoRVingScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = HORIZONTAL_PADDING),
-                        placeholder = { Text("Search destinations", color = Color.Gray) },
+                        placeholder = { Text("Search destinations and Guides", color = Color.Gray) },
                         trailingIcon = {
                             IconButton(onClick = {
                                 if (searchQuery.isNotEmpty()) {
                                     isSearching = true
                                     coroutineScope.launch {
                                         viewModel.clearSearch()
-                                        viewModel.search(searchQuery).collect { results ->
-                                            isSearching = false
-                                            if (results.isNotEmpty()) {
-                                                navController.navigate("search_results")
-                                            }
+                                        // 直接调用搜索方法，不使用Flow收集
+                                        viewModel.performSearch(searchQuery)
+                                        isSearching = false
+                                        // 检查搜索结果状态流
+                                        if (viewModel.searchResults.value.isNotEmpty()) {
+                                            navController.navigate("search_results")
                                         }
                                     }
                                 }
@@ -184,11 +185,12 @@ fun GoRVingScreen(
                                     isSearching = true
                                     coroutineScope.launch {
                                         viewModel.clearSearch()
-                                        viewModel.search(searchQuery).collect { results ->
-                                            isSearching = false
-                                            if (results.isNotEmpty()) {
-                                                navController.navigate("search_results")
-                                            }
+                                        // 直接调用搜索方法，不使用Flow收集
+                                        viewModel.performSearch(searchQuery)
+                                        isSearching = false
+                                        // 检查搜索结果状态流
+                                        if (viewModel.searchResults.value.isNotEmpty()) {
+                                            navController.navigate("search_results")
                                         }
                                     }
                                 }

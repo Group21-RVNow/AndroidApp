@@ -273,6 +273,93 @@ class GoRVingViewModel : ViewModel() {
         }
     }
 
+    // 执行搜索并直接更新状态
+    suspend fun performSearch(query: String) {
+        try {
+            _isLoading.value = true
+            _error.value = null
+            _searchResults.value = emptyList()
+
+            val queryLowerCase = query.lowercase().trim()
+            Log.d(TAG, "Starting search for: '$queryLowerCase'")
+
+            // 1. 尝试直接Firestore查询
+            val firestoreResults = mutableListOf<RVDestination>()
+
+            // 搜索名称
+            val nameSnapshot = db.collection("rv_destinations")
+                .orderBy("name")
+                .startAt(queryLowerCase)
+                .endAt(queryLowerCase + "\uf8ff")
+                .get()
+                .await()
+            nameSnapshot.documents.mapNotNullTo(firestoreResults) { doc ->
+                doc.toObject(RVDestination::class.java)?.copy(id = doc.id)
+            }
+
+            // 搜索国家
+            val countrySnapshot = db.collection("rv_destinations")
+                .orderBy("country")
+                .startAt(queryLowerCase)
+                .endAt(queryLowerCase + "\uf8ff")
+                .get()
+                .await()
+            countrySnapshot.documents.mapNotNullTo(firestoreResults) { doc ->
+                val dest = doc.toObject(RVDestination::class.java)?.copy(id = doc.id)
+                if (dest != null && !firestoreResults.any { it.id == doc.id }) dest else null
+            }
+
+            if (firestoreResults.isNotEmpty()) {
+                Log.d(TAG, "Firestore search found ${firestoreResults.size} results")
+                _searchResults.value = firestoreResults
+                return
+            }
+
+            // 2. 回退到客户端过滤
+            Log.d(TAG, "Falling back to client-side filtering")
+
+            // 获取所有数据
+            val allDestinations = db.collection("rv_destinations").get().await()
+                .documents.mapNotNull { doc ->
+                    doc.toObject(RVDestination::class.java)?.copy(id = doc.id)
+                }
+
+            val allGuides = db.collection("rv_travel_guides").get().await()
+                .documents.mapNotNull { doc ->
+                    doc.toObject(RVTravelGuide::class.java)?.copy(id = doc.id)
+                }
+
+            // 过滤结果
+            val filteredResults = mutableListOf<Any>()
+
+            // 过滤目的地
+            filteredResults.addAll(allDestinations.filter { dest ->
+                dest.name.lowercase().contains(queryLowerCase) ||
+                        dest.country.lowercase().contains(queryLowerCase) ||
+                        dest.location.lowercase().contains(queryLowerCase) ||
+                        dest.description.lowercase().contains(queryLowerCase)
+            })
+
+            // 过滤旅游指南
+            filteredResults.addAll(allGuides.filter { guide ->
+                guide.title.lowercase().contains(queryLowerCase) ||
+                        guide.summary.lowercase().contains(queryLowerCase) ||
+                        guide.content.lowercase().contains(queryLowerCase) ||
+                        guide.tags.any { it.lowercase().contains(queryLowerCase) }
+            })
+
+            Log.d(TAG, "Client-side filtering found ${filteredResults.size} results")
+            _searchResults.value = filteredResults
+        } catch (e: Exception) {
+            _error.value = "Search failed: ${e.message}"
+            Log.e(TAG, "Search error", e)
+            _searchResults.value = emptyList()
+        } finally {
+            _isLoading.value = false
+        }
+    }
+
+
     // 清除搜索结果
     fun clearSearch() {
         _searchResults.value = emptyList()

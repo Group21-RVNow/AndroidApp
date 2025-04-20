@@ -58,6 +58,7 @@ import com.example.rvnow.screens.TravelGuideDetailsScreen
 import com.example.rvnow.viewmodels.RVViewModel
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
+import com.example.rvnow.viewmodels.GoRVingViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -123,7 +124,13 @@ fun RVNowApp(authViewModel: AuthViewModel,rvViewModel:RVViewModel) {
                 authViewModel = AuthViewModel(),
                 rvViewModel = RVViewModel()
             ) }
-            composable("go_rving") { GoRVingScreen(navController = navController) }
+            composable("go_rving") { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("go_rving")
+                }
+                val viewModel: GoRVingViewModel = viewModel(parentEntry)
+                GoRVingScreen(navController, viewModel)
+            }
             composable("travel_guide_details/{guideId}") { backStackEntry ->
                 val guideId = backStackEntry.arguments?.getString("guideId") ?: ""
                 TravelGuideDetailsScreen(navController = navController, guideId = guideId)
@@ -147,9 +154,13 @@ fun RVNowApp(authViewModel: AuthViewModel,rvViewModel:RVViewModel) {
                 CountryDestinationsScreen(navController, country)
             }
 
-            // 搜索结果页面路由
-            composable("search_results") {
-                SearchResultsScreen(navController)
+// 搜索结果页面路由
+            composable("search_results") { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("go_rving")
+                }
+                val viewModel: GoRVingViewModel = viewModel(parentEntry)
+                SearchResultsScreen(navController = navController, viewModel = viewModel)
             }
 
 
@@ -161,15 +172,6 @@ fun RVNowApp(authViewModel: AuthViewModel,rvViewModel:RVViewModel) {
                 RVDetailScreen(rvId = rvId, rvViewModel = rvViewModel, authViewModel= authViewModel,navController = navController,sourcePage=sourcePage)
 //                RVDetailScreen(rvId = rvId, rvViewModel = rvViewModel, navController = navController)
             }
-
-            composable("go_rving") { GoRVingScreen(navController = navController) }
-            composable("travel_guide_details/{guideId}") { backStackEntry ->
-                val guideId = backStackEntry.arguments?.getString("guideId") ?: ""
-                TravelGuideDetailsScreen(navController = navController, guideId = guideId)
-            }
-
-
-
         }
     }
 }

@@ -42,10 +42,8 @@ private val CARD_CONTENT_PADDING = 12.dp
 @Composable
 fun SearchResultsScreen(
     navController: NavController,
-    viewModel: GoRVingViewModel = viewModel()
+    viewModel: GoRVingViewModel
 ) {
-    val viewModel = viewModel<GoRVingViewModel>()
-
     val searchResults by viewModel.searchResults.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
@@ -58,17 +56,6 @@ fun SearchResultsScreen(
     val secondaryColor = Color(0xFF5D8AA8)  // Lake blue
     val tertiaryColor = Color(0xFF6B8E23)  // Moss green
     val neutralColor = Color(0xFFA78A7F)   // Light camel
-
-    // 添加LaunchedEffect以确保在屏幕加载时能够显示最新的搜索结果
-    LaunchedEffect(Unit) {
-        // 确保加载必要数据
-        if (viewModel.destinations.value.isEmpty()) {
-            viewModel.loadDestinations()
-        }
-        if (viewModel.travelGuides.value.isEmpty()) {
-            viewModel.loadTravelGuides()
-        }
-    }
 
     LaunchedEffect(Unit) {
         // 确保加载必要数据
