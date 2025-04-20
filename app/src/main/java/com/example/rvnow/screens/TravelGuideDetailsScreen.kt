@@ -110,40 +110,15 @@ fun TravelGuideDetailsScreen(
                         .padding(paddingValues)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    // Main image
-                    Box {
-                        AsyncImage(
-                            model = guide.imageUrl,
-                            contentDescription = guide.title,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(250.dp),
-                            contentScale = ContentScale.Crop
-                        )
-
-                        // Add semi-transparent overlay for better text readability
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
-                                .align(Alignment.BottomCenter)
-                                .background(
-                                    Color.Black.copy(alpha = 0.5f)
-                                )
-                        )
-
-                        // Add title at the bottom of the image
-                        Text(
-                            text = guide.title,
-                            color = Color.White,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Serif,
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .padding(HORIZONTAL_PADDING, SECTION_SPACING_SMALL)
-                        )
-                    }
+                    // Main image - simplified without text overlay
+                    AsyncImage(
+                        model = guide.imageUrl,
+                        contentDescription = guide.title,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp),
+                        contentScale = ContentScale.Crop
+                    )
 
                     // Author and date info card
                     Card(
@@ -174,7 +149,7 @@ fun TravelGuideDetailsScreen(
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = "By RVNow",  // Updated author
+                                    text = "By RVNow",
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium
                                 )
@@ -192,7 +167,7 @@ fun TravelGuideDetailsScreen(
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = "2025-04-16",  // Updated date
+                                    text = "2025-04-16",
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium
                                 )
@@ -396,6 +371,3 @@ fun parseContentIntoSections(content: String): List<ContentSection> {
 
     return sections
 }
-
-
-
