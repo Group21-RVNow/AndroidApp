@@ -126,32 +126,32 @@ fun RentalScreen(
 
     Column() {
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
-                .padding(bottom = 16.dp)
-                .background(color = Color.White)
-        ) {
-
-            // Loading image from drawable or assets
-            Image(
-                painter = image1,
-                contentDescription = "RV Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-//                modifier = Modifier.width(30000.dp)
-
-            )
-
-            Text(
-                text = "Welcome to RVNow",
-                color = Color.White,
-                fontSize = 34.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(250.dp)
+//                .padding(bottom = 16.dp)
+//                .background(color = Color.White)
+//        ) {
+//
+//
+//            Image(
+//                painter = image1,
+//                contentDescription = "RV Image",
+//                modifier = Modifier.fillMaxSize(),
+//                contentScale = ContentScale.Crop
+////                modifier = Modifier.width(30000.dp)
+//
+//            )
+//
+//            Text(
+//                text = "Welcome to RVNow",
+//                color = Color.White,
+//                fontSize = 34.sp,
+//                fontWeight = FontWeight.Bold,
+//                modifier = Modifier.align(Alignment.Center)
+//            )
+//        }
         // Start Date Field
         Row(modifier = Modifier.padding(10.dp)) {
             Box(
@@ -196,10 +196,6 @@ fun RentalScreen(
         }
 
 
-
-
-//        Spacer(modifier = Modifier.height(10.dp))
-
         Row (modifier = Modifier.padding(10.dp)){
             Box(
                 modifier = Modifier
@@ -208,8 +204,10 @@ fun RentalScreen(
                 OutlinedTextField(
 
                     value = searchWords,
-                    onValueChange = { searchWords = it  },
-                    label = { Text("Driving Type") },
+                    onValueChange = {
+                        searchWords = it
+                        isSearchPerformed = false },
+                    label = { Text("Name, Description, Place...") },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(fontSize = 20.sp)
                 )
@@ -218,7 +216,7 @@ fun RentalScreen(
         }
 
 
-        Spacer(modifier = Modifier.height(10.dp))
+//        Spacer(modifier = Modifier.height(10.dp))
 
         Box(
             modifier = Modifier
@@ -229,10 +227,6 @@ fun RentalScreen(
             Button(
                 onClick = {
                     isSearchPerformed = true
-//                    drivingType = ""
-//                    startDate = ""
-//                    endDate = ""
-//                    place = ""
                           },
                 modifier = Modifier.fillMaxWidth(),
 
@@ -241,7 +235,7 @@ fun RentalScreen(
             }
 
         }
-        Spacer(modifier = Modifier.height(10.dp))
+//        Spacer(modifier = Modifier.height(10.dp))
 
 
 
