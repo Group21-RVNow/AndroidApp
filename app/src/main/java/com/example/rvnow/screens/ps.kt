@@ -38,7 +38,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Observer
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
-import com.example.rvnow.model.Favorite
+import com.example.rvnow.model.Favourite
 import com.example.rvnow.model.User
 //import com.example.rvnow.viewmodels.RVViewModel
 @Composable
@@ -67,7 +67,7 @@ fun ProfileScreen1(
     val profilePictureUrl = userInfo?.profilePictureUrl ?: ""  // Fallback to empty string
 
 
-    val favorites: List<Favorite> by rvViewModel.fetchedFavourites.collectAsState()
+    val favorites: List<Favourite> by rvViewModel.fetchedFavourites.collectAsState()
 
 
 
@@ -225,7 +225,7 @@ private fun UserInfoSection(
 @Composable
 private fun FavoriteSection(
     title: String,
-    favorites: List<Favorite>,
+    favorites: List<Favourite>,
     navController: NavController
 ) {
     Column {
@@ -274,7 +274,7 @@ private fun FavoriteSection(
 
 @Composable
 fun FavoriteRVCard(
-    favorite: Favorite,
+    favorite: Favourite,
     navController: NavController,
 ) {
     Card(

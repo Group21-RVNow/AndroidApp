@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -164,6 +165,13 @@ fun StarRatingBar1(
 //@RequiresApi(Build.VERSION_CODES.O)
 //@OptIn(ExperimentalMaterial3Api::class)
 
+private val BUTTONS_TO_RENTAL_SPACING_LARGE = 48.dp
+
+private val BUTTONS_TO_RENTAL_SPACING = 40.dp
+private val BUTTONS_TO_RENTAL_SPACING_SMALL = 32.dp
+private val HORIZONTAL_PADDING_LARGE = 24.dp
+private val HORIZONTAL_PADDING = 16.dp
+private val HORIZONTAL_PADDING_SMALL = 12.dp
 
 @Composable
 fun RVDetailScreen(
@@ -201,6 +209,22 @@ fun RVDetailScreen(
     var isAddedToCart by remember { mutableStateOf(false) }
 //    val averageRating by rvViewModel.averageRating.collectAsState()
     val averageRating = rvViewModel.averageRatings.collectAsState().value[rvId] ?: 0f
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val isSmallScreen = screenWidth < 360.dp
+    val isMediumScreen = screenWidth >= 360.dp && screenWidth < 600.dp
+    val isLargeScreen = screenWidth >= 600.dp
+    val buttonsToRentalSpacing = when {
+        isLargeScreen -> BUTTONS_TO_RENTAL_SPACING_LARGE
+        isSmallScreen -> BUTTONS_TO_RENTAL_SPACING_SMALL
+        else -> BUTTONS_TO_RENTAL_SPACING
+    }
+
+
+    val horizontalPadding = when {
+        isLargeScreen -> HORIZONTAL_PADDING_LARGE
+        isSmallScreen -> HORIZONTAL_PADDING_SMALL
+        else -> HORIZONTAL_PADDING
+    }
 
 //    val currentUser by authViewModel.userInfo.observeAsState()
 //    var isFavorite by remember { mutableStateOf(false) }
@@ -277,12 +301,20 @@ fun RVDetailScreen(
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Back to Home",
-                    modifier = Modifier.size(44.dp)
+                    modifier = Modifier.size(34.dp)
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .padding(horizontal = horizontalPadding)
+                .background(Color.LightGray.copy(alpha = 0.5f))
+        )
+
 
         LazyColumn(
             modifier = Modifier.background(Color.White)
@@ -303,6 +335,7 @@ fun RVDetailScreen(
                                 .wrapContentHeight(Alignment.CenterVertically),
                             fontWeight = FontWeight.Bold
                         )
+                        Spacer(modifier = Modifier.height(12.dp))
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -346,7 +379,7 @@ fun RVDetailScreen(
 //                                }
 
 
-                                Spacer(modifier = Modifier.height(8.dp))
+
 
                                 Column (modifier = Modifier.background(Color.White).padding(15.dp)){
                                     Row(
@@ -424,7 +457,13 @@ fun RVDetailScreen(
 
                                     // Product Description
                                     Spacer(modifier = Modifier.height(16.dp))
-                                    CustomDivider()
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(1.dp)
+                                            .padding(horizontal = horizontalPadding)
+                                            .background(Color.LightGray.copy(alpha = 0.5f))
+                                    )
                                     Text(
                                         text = "Vehicle Information:",
                                         fontSize = 28.sp,
@@ -521,7 +560,13 @@ fun RVDetailScreen(
 
 
 
-                                    CustomDivider()
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(1.dp)
+                                            .padding(horizontal = horizontalPadding)
+                                            .background(Color.LightGray.copy(alpha = 0.5f))
+                                    )
                                     Spacer(modifier = Modifier.height(16.dp))
 
 
@@ -686,7 +731,13 @@ fun RVDetailScreen(
                                     Log.d("ComputedQuantity", "Computed Quantity: $computedQuantity")
 
 
-                                    CustomDivider()
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(1.dp)
+                                            .padding(horizontal = horizontalPadding)
+                                            .background(Color.LightGray.copy(alpha = 0.5f))
+                                    )
                                     Spacer(modifier = Modifier.height(15.dp))
                                     Column(
 //                            verticalAlignment = Alignment.CenterVertically,
@@ -848,7 +899,13 @@ fun RVDetailScreen(
 
                                     // Comment Input
                                     Spacer(modifier = Modifier.height(15.dp))
-                                    CustomDivider()
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(1.dp)
+                                            .padding(horizontal = horizontalPadding)
+                                            .background(Color.LightGray.copy(alpha = 0.5f))
+                                    )
                                     Spacer(modifier = Modifier.height(15.dp))
                                     Text(
                                         text = "Leave a Comment:",
