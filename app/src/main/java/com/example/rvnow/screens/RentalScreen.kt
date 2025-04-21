@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -82,7 +83,7 @@ fun RentalScreen(
     val rvViewModel: RVViewModel = viewModel()
     val authViewModel: AuthViewModel = viewModel()
     val primaryColor = Color(0xFFE27D5F)  // Terracotta orange
-    val secondaryColor = Color(0xFFE27D5F)  // Lake blue
+    val secondaryColor = Color(0xFFE27D5F)  // Lake blue0xFFE27D5F
 
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
@@ -186,10 +187,6 @@ fun RentalScreen(
             Column {
                 Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
 
-
-
-//                Spacer(modifier = Modifier.height(com.example.rvnow.screens.SECTION_SPACING_SMALL))
-
                 Text(
                     "Rent an RV",
                     fontFamily = FontFamily.Serif,
@@ -198,13 +195,6 @@ fun RentalScreen(
                     color = Color.Black
                 )
                 Spacer(modifier = Modifier.height(CARD_CORNER_RADIUS))
-//                        Text(
-//                            "Discover amazing RV destinations",
-//                            fontFamily = FontFamily.Serif,
-//                            fontSize = 16.sp,
-//                            fontWeight = FontWeight.Medium,
-//                            color = Color.Black
-//                        )
             }
         }
         // Start Date Field
@@ -287,6 +277,10 @@ fun RentalScreen(
 //                    endDate = ""
 //                    place = ""
                           },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.LightGray,
+                    contentColor = Color.Black
+                ),
                 modifier = Modifier.fillMaxWidth(),
 
             ) {

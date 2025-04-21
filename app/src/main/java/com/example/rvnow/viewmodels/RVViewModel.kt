@@ -13,7 +13,9 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateMapOf
 import com.example.rvnow.model.Comment
 import kotlinx.coroutines.Job
+import androidx.lifecycle.viewModelScope
 
+import kotlinx.coroutines.launch
 import com.example.rvnow.model.CartItem
 import com.example.rvnow.model.Favourite
 import com.example.rvnow.model.Rating
@@ -21,7 +23,12 @@ import com.example.rvnow.model.Rating
 import com.example.rvnow.model.RVType
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.CancellationException
-
+sealed class Resource<T>(val data: T? = null, val message: String? = null) {
+    class Empty<T> : Resource<T>()
+    class Loading<T> : Resource<T>()
+    class Success<T>(data: T) : Resource<T>(data = data)
+    class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
+}
 class RVViewModel : ViewModel() {
     private val rvApiService = RVInformation()
 
@@ -61,6 +68,8 @@ class RVViewModel : ViewModel() {
     // 本地收藏状态管理
     private val _favorites = mutableStateMapOf<String, Boolean>()
 //    val favoriteRVs = rvList.filter { it.id in favoriteRVIds }
+
+
 
     init {
         fetchRVs()
@@ -245,6 +254,29 @@ class RVViewModel : ViewModel() {
         }
     }
 
+    // Properly initialized MutableStateFlow
+    private val _removeFromCartState = MutableStateFlow<Resource<Boolean>>(Resource.Empty())
+    val removeFromCartState: StateFlow<Resource<Boolean>> = _removeFromCartState
+
+    fun removeFromCart(userId: String, rvId: String) {
+        viewModelScope.launch {
+            _removeFromCartState.value = Resource.Loading()
+            try {
+                val success = rvApiService.removeFromCart(userId, rvId)
+                _removeFromCartState.value = Resource.Success(success)
+            } catch (e: Exception) {
+                _removeFromCartState.value = Resource.Error(
+                    message = "Failed to remove item: ${e.localizedMessage ?: "Unknown error"}"
+                )
+            }
+        }
+    }
+
+    fun resetRemoveFromCartState() {
+        _removeFromCartState.value = Resource.Empty()
+    }
+
+
 
 //    fun loadFavorites(userId: String) {
 //        viewModelScope.launch {
@@ -261,12 +293,6 @@ class RVViewModel : ViewModel() {
 //            }
 //        }
 //    }
-
-
-
-
-
-
 
 
 
@@ -326,6 +352,8 @@ class RVViewModel : ViewModel() {
             }
         }
     }
+
+
 
 
     private fun updateLocalFavoriteStatus(rvId: String) {

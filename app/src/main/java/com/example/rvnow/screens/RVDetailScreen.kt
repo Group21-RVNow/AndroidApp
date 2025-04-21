@@ -45,6 +45,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -261,27 +262,55 @@ fun RVDetailScreen(
 
     // UI content
     Column {
+        val gradientColors = listOf(
+            Color(0xFFA3DC6F), // Pistachio
+            Color(0xFF62A83B), // RYB Green
+            Color(0xFF0E810C), // India Green
+            Color(0xFF0E4F0F)
+
+        )
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp)
-                .padding(bottom = 16.dp)
-                .background(color = Color.White)
+                .background(
+                    brush = Brush.horizontalGradient(colors = gradientColors)
+                )
+                .padding(vertical = 12.dp, horizontal = 16.dp)
         ) {
-            Image(
-                painter = image1,
-                contentDescription = "RV Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-            Text(
-                text = "Welcome to RVNow",
-                color = Color.White,
-                fontSize = 34.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Center)
-            )
+            Column {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Rent an RV",
+                    fontFamily = FontFamily.Serif,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    color = Color.Black
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(250.dp)
+//                .padding(bottom = 16.dp)
+//                .background(color = Color.White)
+//        ) {
+//            Image(
+//                painter = image1,
+//                contentDescription = "RV Image",
+//                modifier = Modifier.fillMaxSize(),
+//                contentScale = ContentScale.Crop
+//            )
+//            Text(
+//                text = "Welcome to RVNow",
+//                color = Color.White,
+//                fontSize = 34.sp,
+//                fontWeight = FontWeight.Bold,
+//                modifier = Modifier.align(Alignment.Center)
+//            )
+//        }
 
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -381,7 +410,9 @@ fun RVDetailScreen(
 
 
 
-                                Column (modifier = Modifier.background(Color.White).padding(15.dp)){
+                                Column (
+                                    modifier = Modifier.background(Color.White).padding(15.dp)
+                                ){
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         verticalAlignment = Alignment.CenterVertically,
@@ -635,7 +666,12 @@ fun RVDetailScreen(
                                                 showWarningDialog = true
                                             }
                                         },
-                                        modifier = Modifier.align(Alignment.End)
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFA3DC6F),
+                                            contentColor = Color.Black
+                                        ),
+
+                                                modifier = Modifier.align(Alignment.End)
                                     ) {
 
                                         Text("Submit Rating")
@@ -650,9 +686,7 @@ fun RVDetailScreen(
 //                                val authViewModel: AuthViewModel = viewModel()
                                     var startDate by remember { mutableStateOf("") }
                                     var endDate by remember { mutableStateOf("") }
-//                                var place by remember { mutableStateOf("") }
-//                                val context = LocalContext.current
-//                                val rvList by rvViewModel.rvs.collectAsState()
+//
                                     val calendar = Calendar.getInstance()
 //                                var isSearchPerformed by remember { mutableStateOf(false) }
 
@@ -940,6 +974,10 @@ fun RVDetailScreen(
                                                 showWarningDialog = true
                                             }
                                         },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFA3DC6F),
+                                            contentColor = Color.Black
+                                        ),
                                         modifier = Modifier.align(Alignment.End)
                                     ) {
                                         Text("Submit Comment")

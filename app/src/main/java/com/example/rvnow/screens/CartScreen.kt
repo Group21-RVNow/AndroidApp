@@ -1,17 +1,12 @@
 package com.example.rvnow
 
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+
+
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -19,33 +14,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-//import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-
-
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-
-import com.example.rvnow.viewmodels.RVViewModel
-
-import androidx.compose.runtime.livedata.observeAsState
-
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import com.example.rvnow.model.CartItem
 import com.example.rvnow.viewmodels.AuthViewModel
+import com.example.rvnow.viewmodels.RVViewModel
 
 
 @Composable
@@ -56,6 +42,9 @@ fun CartScreen(
 ) {
     val cartItems by rvViewModel.cartItems.collectAsState()
     val currentUser by authViewModel.userInfo.observeAsState()
+//    val userInfo by authViewModel.userInfo.observeAsState()
+    val userId = currentUser?.id
+    var showCheckout by remember { mutableStateOf(false) }
 //    val context = LocalContext.current
     val isLoggedIn by authViewModel.isLoggedIn.observeAsState(initial = false)
     LaunchedEffect(currentUser) {
@@ -65,42 +54,6 @@ fun CartScreen(
     }
 
     Column(modifier = Modifier.padding(10.dp)) {
-//        Text("Your Cart", style = MaterialTheme.typography.h4)
-
-//        Row {
-//
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(42.dp)
-//            ){
-//                Text("Shopping Cart",style = TextStyle(fontSize = 24.sp) )
-//
-//            }
-//
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(bottom = 16.dp) // Add padding to move it up slightly from the bottom
-//            ) {
-//                Button(
-//                    onClick = { /* ... */ },
-//                    modifier = Modifier
-//                        .align(Alignment.BottomEnd) // Position it at the bottom end of the screen
-//                        .padding(16.dp) // Optional padding to make the button text more readable
-//                ) {
-//                    Text(
-//                        text = "Proceed to Checkout",
-//                        style = TextStyle(
-//                            fontSize = 18.sp, // Adjust font size if necessary
-//                            color = Color.Green
-//                        ),
-//                        maxLines = 1, // Ensure text doesn't overflow to multiple lines
-//                        overflow = TextOverflow.Ellipsis // Ensure text is ellipsized if it's too long
-//                    )
-//                }
-//            }
-//        }
 
         Row(
             modifier = Modifier
@@ -117,7 +70,7 @@ fun CartScreen(
 
             // Proceed to Checkout Button
             Button(
-                onClick = { /* Handle checkout */ },
+                onClick = { showCheckout = true },
                 modifier = Modifier.padding(16.dp) // Optional padding for the button
             ) {
                 Text(
@@ -170,7 +123,12 @@ fun CartScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     items(cartItems) { item ->
-                        CartItemCard(item, rvViewModel)
+                        if (userId != null) {
+                            CartItemCard(
+                                item = item,
+                                userId = userId,
+                                rvViewModel= rvViewModel,)
+                        }
                     }
 
                     item {
@@ -188,64 +146,13 @@ fun CartScreen(
                         }
                     }
 
+
+
                 }
 
-                // Box to hold the button at the bottom-right corner
-//                Box(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(bottom = 16.dp) // Add padding to move it up slightly from the bottom
-//                ) {
-//                    Button(
-//                        onClick = { /* ... */ },
-//                        modifier = Modifier
-//                            .align(Alignment.BottomEnd) // Position it at the bottom end of the screen
-//                            .padding(16.dp) // Optional padding to make the button text more readable
-//                    ) {
-//                        Text(
-//                            text = "Proceed to Checkout",
-//                            style = TextStyle(
-//                                fontSize = 18.sp, // Adjust font size if necessary
-//                                color = Color.Green
-//                            ),
-//                            maxLines = 1, // Ensure text doesn't overflow to multiple lines
-//                            overflow = TextOverflow.Ellipsis // Ensure text is ellipsized if it's too long
-//                        )
-//                    }
-//                }
+
             }
 
-
-
-
-
-            // Checkout Button
-//            Button(
-//                onClick = {
-//////                    currentUser?.uid?.let { userId ->
-//////                        rvViewModel.checkout(userId) { success ->
-//////                            if (success) {
-//////                                Toast.makeText(context, "Checkout successful!", Toast.LENGTH_SHORT).show()
-//////                                navController.navigate("home")
-//////                            } else {
-//////                                Toast.makeText(context, "Checkout failed", Toast.LENGTH_SHORT).show()
-////                            }
-//////                        }
-////                    } ?: run {
-////                        Toast.makeText(context, "Please login to checkout", Toast.LENGTH_SHORT).show()
-////                    }
-//                },
-//                modifier = Modifier.background(Color.Red)
-//            ) {
-//                Text(
-//                    "Proceed to Checkout",
-//                    style = TextStyle(
-//                        fontSize = 24.sp,
-//                        color = Color.Green
-//                    )
-//                )
-//
-//            }
         }
     }
 
@@ -259,6 +166,7 @@ fun CartScreen(
 @Composable
 fun CartItemCard(
     item: CartItem,
+    userId: String,
     rvViewModel: RVViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -301,42 +209,151 @@ fun CartItemCard(
                 }
 
 
-                // Quantity Controls
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Quantity: ${item.quantity}")
-
-                    Row {
-                        IconButton(
-                            onClick = {
-//                                rvViewModel.updateCartItemQuantity(item.rvId, item.quantity - 1)
-                            },
-                            enabled = item.quantity > 1
-                        ) {
-                            Icon(Icons.Default.Remove, "Decrease quantity")
-                        }
-
-                        IconButton(
-                            onClick = {
-//                                rvViewModel.updateCartItemQuantity(item.rvId, item.quantity + 1)
-                            }
-                        ) {
-                            Icon(Icons.Default.Add, "Increase quantity")
-                        }
-                    }
-                }
+//                // Quantity Controls
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    modifier = Modifier.fillMaxWidth()
+//                ) {
+//                    Text("Quantity: ${item.quantity}")
+//
+//                    Row {
+//                        IconButton(
+//                            onClick = {
+////                                rvViewModel.updateCartItemQuantity(item.rvId, item.quantity - 1)
+//                            },
+//                            enabled = item.quantity > 1
+//                        ) {
+//                            Icon(Icons.Default.Remove, "Decrease quantity")
+//                        }
+//
+//                        IconButton(
+//                            onClick = {
+////                                rvViewModel.updateCartItemQuantity(item.rvId, item.quantity + 1)
+//                            }
+//                        ) {
+//                            Icon(Icons.Default.Add, "Increase quantity")
+//                        }
+//                    }
+//                }
             }
 
             // Remove Button
             IconButton(
                 onClick = {
-//                    rvViewModel.removeFromCart(item.rvId)
+                    rvViewModel.removeFromCart(
+                        userId = userId,
+                        rvId = item.rvId,
+                    )
+
                 }
             ) {
                 Icon(Icons.Default.Delete, "Remove from cart", tint = Color.Red)
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CheckoutForm(
+    totalPrice: Double,
+    onCancel: () -> Unit,
+    onSubmit: () -> Unit
+) {
+    var shippingAddress by remember { mutableStateOf("") }
+    var paymentMethod by remember { mutableStateOf("Credit Card") }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+//        elevation = 4.dp
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("Checkout Details",
+//                style = MaterialTheme.typography.h6
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Shipping Address Input
+            OutlinedTextField(
+                value = shippingAddress,
+                onValueChange = { shippingAddress = it },
+                label = { Text("Shipping Address") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Payment Method Selection
+            var expanded by remember { mutableStateOf(false) }
+            val paymentMethods = listOf("Credit Card", "PayPal", "Cash on Delivery")
+
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded }
+            ) {
+                OutlinedTextField(
+                    readOnly = true,
+                    value = paymentMethod,
+                    onValueChange = { },
+                    label = { Text("Payment Method") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    paymentMethods.forEach {
+//                        method ->
+//                        DropdownMenuItem(
+////                            onClick = {
+////                                paymentMethod = method
+////                                expanded = false
+////                            }
+//                        ) {
+//                            Text(text = method)
+//                        }
+                    }
+                }
+            }
+
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Total Price Display
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Total:",
+//                    style = MaterialTheme.typography.h6
+                )
+                Text(
+                    "$${"%.2f".format(totalPrice)}",
+//                    style = MaterialTheme.typography.h6
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Action Buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                OutlinedButton(onClick = onCancel) {
+                    Text("Cancel")
+                }
+
+                Button(onClick = onSubmit) {
+                    Text("Confirm Purchase")
+                }
             }
         }
     }

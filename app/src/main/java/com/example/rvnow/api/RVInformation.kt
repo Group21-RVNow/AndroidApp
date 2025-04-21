@@ -273,6 +273,22 @@ class RVInformation {
         }
     }
 
+    suspend fun removeFromCart(userId: String, rvId: String): Boolean {
+        return try {
+            val cartRef = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId)
+                .collection("cart")
+                .document(rvId)
+
+            // Actually delete the document from the cart
+            cartRef.delete().await()
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     fun fetchedCartItems(userId: String, onCartItemsFetched: (List<CartItem>) -> Unit) {
         db.collection("users")
             .document(userId)

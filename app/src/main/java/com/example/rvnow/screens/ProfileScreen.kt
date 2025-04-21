@@ -217,6 +217,10 @@ private fun UserInfoSection(
 
         Button(
             onClick = { isEditing = !isEditing },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.LightGray,
+                contentColor = Color.Black
+            ),
             modifier = Modifier
                 .width(200.dp)
                 .height(48.dp),
@@ -253,6 +257,10 @@ private fun UserInfoSection(
                         isEditing = false // close edit form
                     }
                 },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.LightGray,
+                    contentColor = Color.Black
+                ),
                 modifier = Modifier.width(200.dp),
                 shape = RoundedCornerShape(24.dp)
             ) {
@@ -330,7 +338,7 @@ private fun PublishedSection(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Published RVs++",
+                text = "Published RVs",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )

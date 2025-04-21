@@ -42,6 +42,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.ui.text.font.FontFamily
 import com.google.firebase.Timestamp
@@ -125,7 +126,7 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(5.dp)
+                .padding(horizontal = 10.dp)
                 .background(color = Color.White)
         ){
             Text(text = "Publish Your RV", fontSize = 20.sp, fontWeight = FontWeight.Bold)
@@ -137,7 +138,7 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp)
+                .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState()) // Add scroll functionality here
                 .padding(top = 10.dp)
         ) {
@@ -210,6 +211,10 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
                             newImageUrl = "" // Clear the input field
                         }
                     },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.LightGray,
+                        contentColor = Color.Black
+                    ),
                     modifier = Modifier.padding(top = 8.dp)
                 ) {
                     Text("Add Image URL")
@@ -324,6 +329,11 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
                         Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                     }
                 },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.LightGray,
+                    contentColor = Color.Black
+                ),
+
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Submit RV")
