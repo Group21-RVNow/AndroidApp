@@ -43,8 +43,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
+import androidx.compose.ui.text.font.FontFamily
 import com.google.firebase.Timestamp
-
+private val SECTION_SPACING_SMALL = 20.dp
+private val HORIZONTAL_PADDING = 16.dp
+private val CARD_CORNER_RADIUS = 12.dp
 @Composable
 fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewModel()) {
     var name by remember { mutableStateOf("") }
@@ -55,6 +58,7 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
     var place by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
     var isForSale by remember { mutableStateOf(false) }
+    val secondaryColor = Color(0xFF6B8E23)  // Lake blue
 
     var isForRental by remember { mutableStateOf(false) }
 //    var price by
@@ -76,26 +80,46 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
 
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(250.dp)
+//                .background(color = Color.White)
+//        ) {
+//            Image(
+//                painter = image1,
+//                contentDescription = "RV Image",
+//                modifier = Modifier.fillMaxSize(),
+//                contentScale = ContentScale.Crop
+//            )
+//
+//            Text(
+//                text = "RV Owner",
+//                color = Color.White,
+//                fontSize = 34.sp,
+//                fontWeight = FontWeight.Bold,
+//                modifier = Modifier.align(Alignment.Center)
+//            )
+//        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp)
-                .background(color = Color.White)
+                .background(secondaryColor.copy(alpha = 0.2f))
+                .padding(vertical = 12.dp, horizontal = HORIZONTAL_PADDING)
+//
         ) {
-            Image(
-                painter = image1,
-                contentDescription = "RV Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+            Column {
+                Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
+                Text(
+                    "RV Owner",
+                    fontFamily = FontFamily.Serif,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    color = Color.Black
+                )
+                Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
 
-            Text(
-                text = "Welcome to RVNow",
-                color = Color.White,
-                fontSize = 34.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Center)
-            )
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
         Box(

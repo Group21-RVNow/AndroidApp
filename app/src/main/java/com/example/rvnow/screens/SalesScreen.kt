@@ -396,6 +396,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -413,7 +414,9 @@ import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 //import androidx.compose.ui.Alignment
-
+private val SECTION_SPACING_SMALL = 20.dp
+private val HORIZONTAL_PADDING = 16.dp
+private val CARD_CORNER_RADIUS = 12.dp
 
 @Composable
 fun SalesScreen(
@@ -425,6 +428,8 @@ fun SalesScreen(
 
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
+    val primaryColor = Color(0xFFE27D5F)  // Terracotta orange
+    val secondaryColor = Color(0xFF5D8AA8)  // Lake blue
 
     var searchWords by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -541,6 +546,37 @@ fun SalesScreen(
 //            )
 //
 //        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(secondaryColor.copy(alpha = 0.2f))
+                .padding(vertical = 12.dp, horizontal = HORIZONTAL_PADDING)
+//                .padding(vertical = 12.dp, horizontal = com.example.rvnow.screens.HORIZONTAL_PADDING)
+        ) {
+            Column {
+                Spacer(modifier = Modifier.height(SECTION_SPACING_SMALL))
+
+
+
+//                Spacer(modifier = Modifier.height(com.example.rvnow.screens.SECTION_SPACING_SMALL))
+
+                Text(
+                    "Buy an RV",
+                    fontFamily = FontFamily.Serif,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    color = Color.Black
+                )
+                Spacer(modifier = Modifier.height(CARD_CORNER_RADIUS))
+//                        Text(
+//                            "Discover amazing RV destinations",
+//                            fontFamily = FontFamily.Serif,
+//                            fontSize = 16.sp,
+//                            fontWeight = FontWeight.Medium,
+//                            color = Color.Black
+//                        )
+            }
+        }
 
 
 
@@ -680,7 +716,7 @@ fun StarRatingBar4(
         )
     }
 }
-
+private val CARD_CONTENT_PADDING = 12.dp
 @Composable
 fun RVItem2(
     rv: RV,
@@ -778,7 +814,7 @@ fun RVItem2(
             Spacer(modifier = Modifier.height(8.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = CARD_CONTENT_PADDING),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
 //                    horizontalArrangement = Arrangement.spacedBy(64.dp)
@@ -853,7 +889,7 @@ fun RVItem2(
                             imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                             contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
                             tint = if (isFavorite) Color.Red else Color.Gray,
-                            modifier = Modifier.size(44.dp)
+                            modifier = Modifier.size(34.dp)
                         )
                     }
                 }
