@@ -210,12 +210,12 @@ fun CartItemCard(
 
 
 //                // Quantity Controls
-//                Row(
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    horizontalArrangement = Arrangement.SpaceBetween,
-//                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    Text("Quantity: ${item.quantity}")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Quantity: ${item.quantity}")
 //
 //                    Row {
 //                        IconButton(
@@ -235,7 +235,7 @@ fun CartItemCard(
 //                            Icon(Icons.Default.Add, "Increase quantity")
 //                        }
 //                    }
-//                }
+                }
             }
 
             // Remove Button
