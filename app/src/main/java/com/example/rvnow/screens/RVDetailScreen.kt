@@ -667,7 +667,7 @@ fun RVDetailScreen(
                                             }
                                         },
                                         colors = ButtonDefaults.buttonColors(
-                                            containerColor = Color(0xFFA3DC6F),
+                                            containerColor = Color.LightGray,
                                             contentColor = Color.Black
                                         ),
 
@@ -975,7 +975,7 @@ fun RVDetailScreen(
                                             }
                                         },
                                         colors = ButtonDefaults.buttonColors(
-                                            containerColor = Color(0xFFA3DC6F),
+                                            containerColor = Color.LightGray,
                                             contentColor = Color.Black
                                         ),
                                         modifier = Modifier.align(Alignment.End)

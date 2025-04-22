@@ -282,10 +282,10 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
 
             Button(
                 onClick = {
-                    if (name.isNotEmpty() && description.isNotEmpty() &&pricePerDay.isNotEmpty() &&price.isNotEmpty() && place.isNotEmpty()) {
+                    if (name.isNotEmpty() && description.isNotEmpty() &&pricePerDay.isNotEmpty() && price.isNotEmpty() && place.isNotEmpty()) {
                         val pricePerDayValue = pricePerDay.toDoubleOrNull()
                         val priceValue = price.toDoubleOrNull()
-                        if (priceValue == null ) {
+                        if (priceValue == null || priceValue  == null) {
                             Toast.makeText(context, "Invalid price format", Toast.LENGTH_SHORT).show()
                             return@Button
                         }

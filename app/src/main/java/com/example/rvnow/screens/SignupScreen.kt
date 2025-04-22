@@ -148,7 +148,7 @@ private fun signUpUser(
                     val userId = user.uid
                     val userRole = UserRole.Customer // Default role
                     val passwordHash = hashPassword(password)
-                    val userProfilePicture = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSdz0utA21KB1xCbObh4vipxTQ8Bw9XMRoyyU8HTWeukL-Cic4PUjf3gE&usqp=CAE&s"
+                    val userProfilePicture = "https://play-lh.googleusercontent.com/3Fsib84emmZzNBKV0baMOEtK3lIwqTvxaw_0m6dMWJbtf0d6yirIx6vgvbi6KiqI7qk=w526-h296-rw"
 
                     // Create User object
                     val newUser = User(

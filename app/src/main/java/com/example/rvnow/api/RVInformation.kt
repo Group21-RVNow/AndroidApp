@@ -7,6 +7,7 @@ import com.example.rvnow.model.Favourite
 import com.example.rvnow.model.RV
 import com.example.rvnow.model.RVType
 import com.example.rvnow.model.Rating
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.AggregateField
 import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.FieldValue
@@ -318,6 +319,13 @@ class RVInformation {
                 val favorites = snapshot?.documents?.mapNotNull { it.toObject(Favourite::class.java) }
                 onFavoritesFetched(favorites ?: emptyList())
             }
+    }
+
+
+    fun updateRV(rv: RV): Task<Void> {
+        return db.collection("rvs")
+            .document(rv.id)
+            .set(rv)
     }
 
 

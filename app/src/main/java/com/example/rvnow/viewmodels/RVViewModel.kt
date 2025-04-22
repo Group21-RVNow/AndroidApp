@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.rvnow.model.Comment
 import kotlinx.coroutines.Job
 import androidx.lifecycle.viewModelScope
@@ -275,6 +277,21 @@ class RVViewModel : ViewModel() {
     fun resetRemoveFromCartState() {
         _removeFromCartState.value = Resource.Empty()
     }
+
+
+    private val _updateStatus = MutableLiveData<Result<Void>>()
+    val updateStatus: LiveData<Result<Void>> = _updateStatus
+
+    fun updateRV(rv: RV) {
+        rvInformation.updateRV(rv)
+            .addOnSuccessListener {
+                _updateStatus.value = Result.success(it)
+            }
+            .addOnFailureListener { exception ->
+                _updateStatus.value = Result.failure(exception)
+            }
+    }
+
 
 
 

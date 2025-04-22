@@ -71,13 +71,17 @@ fun CartScreen(
             // Proceed to Checkout Button
             Button(
                 onClick = { showCheckout = true },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFA3DC6F),
+                    contentColor = Color.Black
+                ),
                 modifier = Modifier.padding(16.dp) // Optional padding for the button
             ) {
                 Text(
                     text = "Proceed to Checkout",
                     style = TextStyle(
                         fontSize = 18.sp,
-                        color = Color.Green
+                        color = Color.Black
                     ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

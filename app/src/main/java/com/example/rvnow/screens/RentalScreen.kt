@@ -134,48 +134,7 @@ fun RentalScreen(
     }
 
     Column() {
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-//        ) {
-//            Icon(Icons.Default.Explore, contentDescription = null, tint = Color(0xFF3F51B5))
-//            Spacer(modifier = Modifier.width(8.dp))
-//            Text("Explore RV Rentals", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-//        }
-//
-//        Text(
-//            text = "Filter by place, availability, or type below.",
-//            color = Color.Gray,
-//            fontSize = 14.sp,
-//            modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
-//        )
 
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(250.dp)
-//                .padding(bottom = 16.dp)
-//                .background(color = Color.White)
-//        ) {
-//
-//            // Loading image from drawable or assets
-//            Image(
-//                painter = image1,
-//                contentDescription = "RV Image",
-//                modifier = Modifier.fillMaxSize(),
-//                contentScale = ContentScale.Crop
-////                modifier = Modifier.width(30000.dp)
-//
-//            )
-//
-//            Text(
-//                text = "Welcome to RVNow",
-//                color = Color.White,
-//                fontSize = 34.sp,
-//                fontWeight = FontWeight.Bold,
-//                modifier = Modifier.align(Alignment.Center)
-//            )
-//        }
 
         Box(
             modifier = Modifier
