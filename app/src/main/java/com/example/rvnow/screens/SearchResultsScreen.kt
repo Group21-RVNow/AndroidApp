@@ -271,7 +271,7 @@ fun SearchDestinationItem(
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
-                        text = "${destination.location}, ${destination.country}",
+                        text = "${destination.location}",
                         fontSize = 14.sp,
                         fontFamily = FontFamily.Default,
                         color = Color.DarkGray

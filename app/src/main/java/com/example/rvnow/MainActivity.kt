@@ -20,6 +20,8 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Payment
+import androidx.compose.material.icons.filled.LocalAtm
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -145,7 +147,6 @@ fun RVNowApp(authViewModel: AuthViewModel,rvViewModel:RVViewModel) {
                 DestinationDetailsScreen(navController, destinationId)
             }
 
-            // 国家目的地列表路由
             composable(
                 route = "country_destinations/{country}",
                 arguments = listOf(navArgument("country") { type = NavType.StringType })
@@ -154,7 +155,7 @@ fun RVNowApp(authViewModel: AuthViewModel,rvViewModel:RVViewModel) {
                 CountryDestinationsScreen(navController, country)
             }
 
-// 搜索结果页面路由
+
             composable("search_results") { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry("go_rving")
@@ -178,16 +179,15 @@ fun RVNowApp(authViewModel: AuthViewModel,rvViewModel:RVViewModel) {
 
 @Composable
 fun BottomNavBar(navController: NavController, authViewModel: AuthViewModel) {
-    // 保持原有的认证状态检查逻辑
+
     val isLoggedIn by authViewModel.isLoggedIn.observeAsState(false)
 
-    // 定义导航项，保持原有的登录/登出逻辑不变
     val items = listOf(
         NavItem("Home", Icons.Default.Home, "home"),
         NavItem("Rent", Icons.Default.DirectionsCar, "rental"),
-        NavItem("Buy", Icons.Default.ShoppingCart, "sales"),
+        NavItem("Buy", Icons.Default.LocalAtm, "sales"),
         NavItem("Owner", Icons.Default.Key, "owner"),
-        NavItem("Cart", Icons.Default.Casino, "cart"),
+        NavItem("Cart", Icons.Default.ShoppingCart, "cart"),
         NavItem(
             if (isLoggedIn) "Profile" else "Login",
             if (isLoggedIn) Icons.Default.Person else Icons.Default.Login,
@@ -205,14 +205,9 @@ fun BottomNavBar(navController: NavController, authViewModel: AuthViewModel) {
                 label = { Text(item.label) },
                 selected = currentRoute == item.route,
                 onClick = {
-                    // 保持原有的导航逻辑不变
+
                     navController.navigate(item.route) {
-                        // 仅优化导航栈管理，不影响原有逻辑
-//                        popUpTo(navController.graph.startDestinationId) {
-//                            saveState = true
-//                        }
                         launchSingleTop = true
-//                        restoreState = true
                     }
                 }
             )
