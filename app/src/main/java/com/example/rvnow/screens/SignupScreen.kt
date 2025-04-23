@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -113,6 +114,10 @@ fun SignupScreen(navController: NavController) {
                             signUpUser(email, password, fullName, auth, navController, firestore, context)
                         }
                     },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFA3DC6F),
+                        contentColor = Color.Black
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = "Sign Up")

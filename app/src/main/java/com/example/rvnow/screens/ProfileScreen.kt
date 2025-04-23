@@ -139,10 +139,7 @@ fun ProfileScreen(
 
 
             // 已发布车辆
-            PublishedSection(
-                rvs = publishedRV,
-                navController = navController
-            )
+            PublishedSection(rvs = publishedRV, navController = navController, authViewModel = authViewModel, rvViewModel = rvViewModel)
 
             CustomDivider()
 
@@ -252,11 +249,16 @@ private fun UserInfoSection(
 
             Button(
                 onClick = {
+                    if(editedProfileUrl!= null && editedName!=null){
                     user?.id?.let { userId ->
                         authViewModel.updateUserInfo(userId, editedName, editedProfileUrl)
-                        isEditing = false // close edit form
+                        isEditing = false
+                        editedName = ""
+                        editedProfileUrl = ""
                     }
-                },
+
+                }
+                          },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray,
                     contentColor = Color.Black
@@ -329,8 +331,11 @@ private fun FavoriteSection1(
 @Composable
 private fun PublishedSection(
     rvs: List<RV>,
+    authViewModel: AuthViewModel,
+    rvViewModel: RVViewModel,
     navController: NavController
 ) {
+    val userInfo by authViewModel.userInfo.observeAsState()
     Column {
         // 标题行
         Row(
@@ -358,10 +363,14 @@ private fun PublishedSection(
             modifier = Modifier.fillMaxWidth()
         ) {
             items(rvs) { rv ->
-                FavoriteRVCard1(
-                    rv = rv, onClick = { navController.navigate("detail/${rv.id}") },
-                    navController = navController
-                )
+                userInfo?.let {
+                    FavoriteRVCard1(
+                        rv = rv, onClick = { navController.navigate("detail/${rv.id}") },
+                        userId = it.id, navController = navController,
+                        authViewModel = authViewModel,
+                        viewModel = rvViewModel
+                    )
+                }
             }
         }
     }
@@ -457,6 +466,9 @@ private fun FavoriteSection(
 @Composable
 fun FavoriteRVCard1(
     rv: RV,
+    viewModel: RVViewModel,
+    userId: String,
+    authViewModel: AuthViewModel,
     navController: NavController,
     onClick: () -> Unit
 ) {
@@ -477,20 +489,51 @@ fun FavoriteRVCard1(
                 contentScale = ContentScale.Crop
             )
 
-            Column(modifier = Modifier.padding(12.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 12.dp)) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = rv.name,
                         style = MaterialTheme.typography.titleSmall,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
+
+
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Button(
+                        onClick = {
+
+
+                            viewModel.removeRV(userId, rv.id)
+                            viewModel.fetchRVs()
+
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFA3DC6F),
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text(
+                            text = "Remove RV",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    }
+                }
+            }
+
         }
     }
 }

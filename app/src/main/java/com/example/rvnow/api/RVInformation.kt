@@ -329,6 +329,23 @@ class RVInformation {
     }
 
 
+    suspend fun removeFromRV(userId: String, rvId: String): Boolean {
+        return try {
+            val cartRef = FirebaseFirestore.getInstance()
+                .collection("rvs")
+                .document(rvId)
+
+            // Delete the entire document
+            cartRef.delete().await()
+            true
+        } catch (e: Exception) {
+            e.printStackTrace() // Optional: log error for debugging
+            false
+        }
+    }
+
+
+
 
 //    suspend fun getAllFavorites(userId: String): List<Favorite> {
 //            if (userId.isBlank()) {

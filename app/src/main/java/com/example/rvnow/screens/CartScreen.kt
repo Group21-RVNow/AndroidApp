@@ -75,7 +75,7 @@ fun CartScreen(
                     containerColor = Color(0xFFA3DC6F),
                     contentColor = Color.Black
                 ),
-                modifier = Modifier.padding(16.dp) // Optional padding for the button
+                modifier = Modifier.padding(16.dp)
             ) {
                 Text(
                     text = "Proceed to Checkout",
@@ -102,6 +102,10 @@ fun CartScreen(
                             popUpTo("Signin|up") { inclusive = true }
                         }
                     },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFA3DC6F),
+                        contentColor = Color.Black
+                    ),
                     modifier = Modifier.align(Alignment.Center)
                 ) {
                     Text("Sign In|Sign Up")
@@ -110,7 +114,7 @@ fun CartScreen(
         } else if (cartItems.isEmpty()) {
             Text("Your cart is empty", modifier = Modifier.padding(16.dp))
         } else {
-            // Wrap the LazyColumn in a Box
+
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {

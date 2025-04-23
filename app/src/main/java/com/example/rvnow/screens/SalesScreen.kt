@@ -618,7 +618,7 @@ fun SalesScreen(
 //                    place = ""
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.LightGray,
+                    containerColor = Color(0xFFA3DC6F),
                     contentColor = Color.Black
                 ),
                 modifier = Modifier.fillMaxWidth(),

@@ -295,21 +295,24 @@ class RVViewModel : ViewModel() {
 
 
 
-//    fun loadFavorites(userId: String) {
-//        viewModelScope.launch {
-//            try {
-//                val result = rvInformation.getAllFavorites(userId)
-//                if (isActive) { // Check if coroutine is still active
-//                    _fetchedFavourites.value = result
-//                }
-//            } catch (e: Exception) {
-//                if (e !is CancellationException) { // Don't reset on normal cancellation
-//                    Log.e("ViewModel", "Permanent error", e)
-//                    _fetchedFavourites.value = emptyList()
-//                }
-//            }
-//        }
-//    }
+    private val _deleteStatus = MutableLiveData<Boolean?>()
+    val deleteStatus: LiveData<Boolean?> get() = _deleteStatus
+
+    fun removeRV(userId: String, rvId: String) {
+        viewModelScope.launch {
+            try {
+                val result = rvApiService.removeFromRV(userId, rvId)
+                _deleteStatus.value = result
+            } catch (e: Exception) {
+                _deleteStatus.value = false
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun resetDeleteStatus() {
+        _deleteStatus.value = null
+    }
 
 
 
