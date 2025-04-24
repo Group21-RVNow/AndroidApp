@@ -1,6 +1,7 @@
 package com.example.rvnow
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -37,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Observer
 import coil.compose.AsyncImage
@@ -178,7 +180,7 @@ private fun UserInfoSection(
     var isEditing by remember { mutableStateOf(false) }
     var editedName by remember { mutableStateOf(fullName ?: "") }
     var editedProfileUrl by remember { mutableStateOf(profilePictureUrl ?: "") }
-
+    val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -249,16 +251,17 @@ private fun UserInfoSection(
 
             Button(
                 onClick = {
-                    if(editedProfileUrl!= null && editedName!=null){
-                    user?.id?.let { userId ->
-                        authViewModel.updateUserInfo(userId, editedName, editedProfileUrl)
-                        isEditing = false
-                        editedName = ""
-                        editedProfileUrl = ""
+                    if (!editedProfileUrl.isNullOrBlank() && !editedName.isNullOrBlank()) {
+                        user?.id?.let { userId ->
+                            authViewModel.updateUserInfo(userId, editedName, editedProfileUrl)
+                            isEditing = false
+                            editedName = ""
+                            editedProfileUrl = ""
+                        }
+                    } else {
+                        Toast.makeText(context, "Profile image URL and name must not be empty", Toast.LENGTH_SHORT).show()
                     }
-
-                }
-                          },
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray,
                     contentColor = Color.Black
