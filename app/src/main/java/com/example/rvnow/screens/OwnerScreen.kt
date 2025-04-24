@@ -315,6 +315,8 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
 
                         if (newRV != null) {
                             rvViewModel.addRV(newRV)
+                            Toast.makeText(context, "RV submitted successfully!", Toast.LENGTH_SHORT).show()
+
                         } // Calls ViewModel function
                         name =""
                         description=""
