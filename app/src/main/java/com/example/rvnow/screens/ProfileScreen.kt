@@ -368,7 +368,7 @@ private fun PublishedSection(
             items(rvs) { rv ->
                 userInfo?.let {
                     FavoriteRVCard1(
-                        rv = rv, onClick = { navController.navigate("detail/${rv.id}") },
+                        rv = rv, onClick = { navController.navigate("detail/${rv.id}?sourcePage=profile") },
                         userId = it.id, navController = navController,
                         authViewModel = authViewModel,
                         viewModel = rvViewModel

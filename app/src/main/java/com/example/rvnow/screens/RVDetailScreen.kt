@@ -281,7 +281,7 @@ fun RVDetailScreen(
             Column {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Rent an RV",
+                    text = "RV Detail",
                     fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
@@ -290,27 +290,7 @@ fun RVDetailScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(250.dp)
-//                .padding(bottom = 16.dp)
-//                .background(color = Color.White)
-//        ) {
-//            Image(
-//                painter = image1,
-//                contentDescription = "RV Image",
-//                modifier = Modifier.fillMaxSize(),
-//                contentScale = ContentScale.Crop
-//            )
-//            Text(
-//                text = "Welcome to RVNow",
-//                color = Color.White,
-//                fontSize = 34.sp,
-//                fontWeight = FontWeight.Bold,
-//                modifier = Modifier.align(Alignment.Center)
-//            )
-//        }
+
 
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -390,23 +370,6 @@ fun RVDetailScreen(
                                 )
 
                                 Spacer(modifier = Modifier.height(12.dp))
-
-
-
-//                                Box(
-//                                    modifier = Modifier.fillMaxWidth(),
-//                                    contentAlignment = Alignment.Center
-//                                ) {
-//                                    // Display stars and average rating
-//                                    StarRatingBar(
-//                                        rating = rating,
-//                                        averageRating = averageRating, // Show average behind the stars
-//                                        onRatingChanged = { newRating ->
-//                                            rating = newRating
-//                                        }
-//                                    )
-//                                }
-
 
 
 
@@ -522,19 +485,22 @@ fun RVDetailScreen(
                                     )
 
                                     Spacer(modifier = Modifier.height(15.dp))
-//                        Text(
-//                            text = if (sourcePage == "rental") {
-//                                "Price Per Day: \$${it.pricePerDay}"
-//                            } else {
-//                                "Sales Price: \$${it.price ?: "N/A"}"
-//                            },
-//                            fontSize = 16.sp,
-//                            fontWeight = FontWeight.Bold
-//                        )
+
                                     Text(
                                         text = when (sourcePage.lowercase()) {
                                             "rental" -> "Price Per Day: \$${it.pricePerDay}"
+
+                                            "profile" -> {
+                                                when {
+                                                    it.isForRental && it.isForSale -> "Price Per Day: \$${it.pricePerDay} \n\nSales Price: \$${it.price}"
+                                                    it.isForRental && !it.isForSale-> "Price Per Day: \$${it.pricePerDay}"
+                                                    it.isForSale && !it.isForRental-> "Sales Price: \$${it.price}"
+                                                    else -> "Not published"
+                                                }
+                                            }
+
                                             "sales" -> "Sales Price: \$${it.price ?: "N/A"}"
+
                                             "home" -> {
                                                 if (!it.isForSale && it.isPopular) {
                                                     "Price Per Day: \$${it.pricePerDay}"
@@ -551,8 +517,6 @@ fun RVDetailScreen(
                                         fontWeight = FontWeight.Bold
                                     )
 
-
-//                         it.isForSale && it.isPopular
 
 
                                     Spacer(modifier = Modifier.height(8.dp))
