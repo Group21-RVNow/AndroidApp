@@ -18,16 +18,11 @@ data class RV(
     val driverLicenceRequired: String? = null,
     val kilometerLimitation: Int? = null,
     @get:PropertyName("isForRental") var isForRental: Boolean = false,
-
     @get:PropertyName("isPopular") val isPopular: Boolean = true,
-
     val status: String = "",
     val createdAt: Timestamp = Timestamp.now(),
     val bookedDates: List<Map<String, Timestamp>> = listOf(),
-
-
     var isFavorite: Boolean = false,
-
     @get:PropertyName("price")
     var price: Double = 0.0
 )

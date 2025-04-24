@@ -58,6 +58,7 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
     var pricePerDay by remember { mutableStateOf("") }
     var place by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
+    var kilometerLimitation by remember { mutableStateOf("") }
     var isForSale by remember { mutableStateOf(false) }
     val secondaryColor = Color(0xFF6B8E23)  // Lake blue
 
@@ -187,8 +188,8 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
             )
 
             OutlinedTextField(
-                value = place,
-                onValueChange = { place = it },
+                value = kilometerLimitation,
+                onValueChange = { kilometerLimitation = it },
                 label = { Text("Kilometer Limitation per Day") },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -304,8 +305,8 @@ fun OwnerScreen(navController: NavController, rvViewModel: RVViewModel = viewMod
                                 isForRental = isForRental,
                                 additionalImages = additionalImages, // Corrected to use the current list
                                 insurance = emptyMap(),
-                                driverLicenceRequired = "",
-                                kilometerLimitation = 0,
+                                driverLicenceRequired = "B",
+                                kilometerLimitation = kilometerLimitation.toIntOrNull(),
                                 status = "Available",
                                 createdAt = Timestamp.now(),
                                 bookedDates = emptyList()

@@ -210,9 +210,19 @@ private fun HeroSection(heroImage: Painter) {
                 .padding(start = HORIZONTAL_PADDING + SECTION_TITLE_PADDING_START, bottom = 75.dp)
         ) {
             Text(
+                text = "RVNow",
+                color = Color.White,
+                fontSize = 32.sp,
+//                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Serif,
+                letterSpacing = 0.5.sp,
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
                 text = "Journey boldly",
                 color = Color.White,
-                fontSize = 20.sp,
+                fontSize = 16.sp,
 //                fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Serif,
                 letterSpacing = 0.5.sp,
@@ -221,9 +231,9 @@ private fun HeroSection(heroImage: Painter) {
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "feel at home wherever you go",
+                text = "Feel at home wherever you go",
                 color = Color.White,
-                fontSize = 20.sp,
+                fontSize = 16.sp,
 //                fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Serif,
                 letterSpacing = 0.5.sp,

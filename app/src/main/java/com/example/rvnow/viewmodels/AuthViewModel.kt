@@ -18,6 +18,7 @@ class AuthViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
 
+
     private val _isLoggedIn = MutableLiveData(auth.currentUser != null)
     val isLoggedIn: LiveData<Boolean> get() = _isLoggedIn
 
@@ -63,8 +64,8 @@ class AuthViewModel : ViewModel() {
 //                }
             }
             .addOnFailureListener {
-                _userInfo.value = null // If fetching fails, set it to null
-                _fullName.value = null // Handle failure in fetching full name
+                _userInfo.value = null
+                _fullName.value = null
             }
     }
 

@@ -403,10 +403,6 @@ class RVInformation {
 
             rvCollection.document(rv.id).set(rv).await()
             Log.d("Firestore", "Document added/updated with ID: ${rv.id}")
-            // Use await() to properly suspend execution until Firestore operation completes
-//                rvCollection.document(rvObject.id).set(rvObject).await()
-
-//                Log.d("Firestore", "Document added/updated with ID: ${rvObject.id}")
 
         } catch (e: Exception) {
             Log.e("Firestore", "Error adding RVs: ${e.message}", e)
